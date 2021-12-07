@@ -1,7 +1,7 @@
 const connection = require('../utils/connectDB');
 
 class DBModel {
-  static find(condition) {
+  static find(condition = true) {
     return new Promise((resolve, reject) => {
       connection.query(
         `SELECT * FROM ${this.tableName} WHERE ?`,

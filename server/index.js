@@ -13,7 +13,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   routes(app);
   liigaService.poll();
-  cron.schedule('*/30 * * * * *', async () => {
+  cron.schedule('* * * * *', async () => {
     liigaService.poll();
   });
 });

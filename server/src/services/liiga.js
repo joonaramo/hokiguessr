@@ -20,19 +20,38 @@ const checkIfGoalExists = async (eventId) => {
 const poll = async () => {
   console.log('polled');
   const { data } = await axios.get(`${BASE_URL}/games/poll`);
-  data.games.map((g) => {
-    g.homeTeam.goalEvents.map(async (e) => {
-      const goalExists = await checkIfGoalExists(e.eventId);
-      if (!goalExists) {
-        const newGoal = new Goal({
-          playerId: e.scorerPlayerId,
-          eventId: e.eventId,
-          date: new Date(e.logTime),
+  if (data.games.length > 0) {
+    data.games.map((g) => {
+      g.homeTeam.goalEvents &&
+        g.homeTeam.goalEvents.map(async (e) => {
+          if (!e.goalTypes.includes('VL')) {
+            const goalExists = await checkIfGoalExists(e.eventId);
+            if (!goalExists) {
+              const newGoal = new Goal({
+                playerId: e.scorerPlayerId,
+                eventId: e.eventId,
+                date: new Date(e.logTime),
+              });
+              await newGoal.save();
+            }
+          }
         });
-        await newGoal.save();
-      }
+      g.awayTeam.goalEvents &&
+        g.awayTeam.goalEvents.map(async (e) => {
+          if (!e.goalTypes.includes('VL')) {
+            const goalExists = await checkIfGoalExists(e.eventId);
+            if (!goalExists) {
+              const newGoal = new Goal({
+                playerId: e.scorerPlayerId,
+                eventId: e.eventId,
+                date: new Date(e.logTime),
+              });
+              await newGoal.save();
+            }
+          }
+        });
     });
-  });
+  }
 };
 
 const liigaService = {
