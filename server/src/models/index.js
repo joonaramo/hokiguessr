@@ -1,15 +1,19 @@
 const connection = require('../utils/connectDB');
 
 class DBModel {
-  static find() {
+  static find(condition) {
     return new Promise((resolve, reject) => {
-      connection.query(`SELECT * FROM ${this.tableName}`, (err, locations) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(locations);
+      connection.query(
+        `SELECT * FROM ${this.tableName} WHERE ?`,
+        [condition],
+        (err, locations) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(locations);
+          }
         }
-      });
+      );
     });
   }
   static findById(id) {
