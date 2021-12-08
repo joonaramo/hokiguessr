@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const getAll = async (req, res) => {
   const users = await User.find();
@@ -20,8 +21,24 @@ const create = async (req, res) => {
     created_at: date,
     updated_at: date,
   });
+
   const user = await newUser.save();
-  res.json(user);
+
+  const payload = {
+    user: {
+      id: user.id,
+      username: user.username,
+    },
+  };
+  jwt.sign(
+    payload,
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' },
+    (err, token) => {
+      if (err) throw err;
+      return res.json({ token });
+    }
+  );
 };
 
 const playerController = {
