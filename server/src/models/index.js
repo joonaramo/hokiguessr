@@ -33,6 +33,25 @@ class DBModel {
       );
     });
   }
+  static findOne(condition = true) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM ${this.tableName} WHERE ?`,
+        [condition],
+        (err, locations) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (locations.length === 0) {
+              resolve(null);
+            } else {
+              resolve(locations[0]);
+            }
+          }
+        }
+      );
+    });
+  }
   static deleteById(id) {
     return new Promise((resolve, reject) => {
       connection.query(
