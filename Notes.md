@@ -3,12 +3,12 @@
 ## Database model
 - User
   - id
-  - email
   - username
   - password
   - points
-  - predictions
-  - is_admin
+  - is_admin (boolean)
+  - created_at (date)
+  - updated_at (date)
 - Player
   - id
   - player_id
@@ -16,9 +16,11 @@
 - Prediction
   - id
   - user_id
-  - points
-  - date
-  - players
+  - player_id
+  - points_used
+  - points_ratio
+  - created_at (date)
+  - completed_at (date)
   - completed (boolean)
   - correct (boolean)
 - Goals
@@ -26,3 +28,9 @@
   - player_id
   - event_id
   - date
+- UserPrediction
+  - user_id
+  - prediction_id
+- PredictionPlayer
+  - prediction_id
+  - player_id
