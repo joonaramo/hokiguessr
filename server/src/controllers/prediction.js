@@ -7,17 +7,18 @@ const getAll = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { pointsUsed, pointsRatio } = req.body;
+  const { pointsUsed, pointsRatio, playerId } = req.body;
   const date = new Date(Date.now());
   const newPrediction = new Prediction({
     pointsUsed,
     pointsRatio,
-    userId: 3,
+    playerId,
+    userId: req.user.id,
     created_at: date,
   });
   const prediction = await newPrediction.save();
   const newUserPrediction = new UserPrediction({
-    userId: 3,
+    userId: req.user.id,
     predictionId: prediction.id,
   });
   await newUserPrediction.save();
