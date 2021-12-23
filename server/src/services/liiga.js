@@ -4,8 +4,11 @@
 
 const axios = require('axios');
 const Goal = require('../models/Goal');
+const Prediction = require('../models/Prediction');
+const User = require('../models/User');
 
 const BASE_URL = 'https://liiga.fi/api/v1';
+const mockData = require('./mockData');
 
 // Check if a goal is already added to database
 const checkIfGoalExists = async (eventId) => {
@@ -16,39 +19,78 @@ const checkIfGoalExists = async (eventId) => {
   return false;
 };
 
-// Poll current games to check if new goals have been scored
+const handleGoalEvent = async (goalEvent) => {
+  if (!goalEvent.goalTypes.includes('VL')) {
+    const goalExists = await checkIfGoalExists(goalEvent.eventId);
+    if (!goalExists) {
+      const newGoal = new Goal({
+        player_id: goalEvent.scorerPlayerId,
+        event_id: goalEvent.eventId,
+        date: new Date(goalEvent.logTime),
+      });
+      await newGoal.save();
+      const predictions = await Prediction.find({
+        player_id: goalEvent.scorerPlayerId,
+      });
+      predictions.forEach(async (prediction) => {
+        prediction.completed_at = new Date(goalEvent.logTime);
+        prediction.completed = 1;
+        prediction.correct = 1;
+        await prediction.save();
+        const user_id = prediction.user_id;
+        const user = await User.findById(user_id);
+        user.points =
+          user.points + prediction.points_used * prediction.points_ratio;
+        await user.save();
+      });
+    }
+  }
+};
+
+/**
+ * Get all players
+ * @returns {array} All players from Liiga
+ */
+const getPlayers = async () => {
+  try {
+    const { data } = await axios.get(
+      `${BASE_URL}/players/info?season=2021&tournament=runkosarja`
+    );
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/**
+ * Get all teams
+ * @returns {array} All teams from Liiga
+ */
+const getTeams = async () => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/teams/info`);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+/**
+ * Poll current games to check if new goals have been scored
+ */
 const poll = async () => {
   console.log('polled');
-  const { data } = await axios.get(`${BASE_URL}/games/poll`);
+  // const { data } = await axios.get(`${BASE_URL}/games/poll`);
+  const data = mockData;
   if (data.games.length > 0) {
     data.games.map((g) => {
       g.homeTeam.goalEvents &&
-        g.homeTeam.goalEvents.map(async (e) => {
-          if (!e.goalTypes.includes('VL')) {
-            const goalExists = await checkIfGoalExists(e.eventId);
-            if (!goalExists) {
-              const newGoal = new Goal({
-                playerId: e.scorerPlayerId,
-                eventId: e.eventId,
-                date: new Date(e.logTime),
-              });
-              await newGoal.save();
-            }
-          }
+        g.homeTeam.goalEvents.map(async (goalEvent) => {
+          await handleGoalEvent(goalEvent);
         });
       g.awayTeam.goalEvents &&
-        g.awayTeam.goalEvents.map(async (e) => {
-          if (!e.goalTypes.includes('VL')) {
-            const goalExists = await checkIfGoalExists(e.eventId);
-            if (!goalExists) {
-              const newGoal = new Goal({
-                playerId: e.scorerPlayerId,
-                eventId: e.eventId,
-                date: new Date(e.logTime),
-              });
-              await newGoal.save();
-            }
-          }
+        g.awayTeam.goalEvents.map(async (goalEvent) => {
+          await handleGoalEvent(goalEvent);
         });
     });
   }
