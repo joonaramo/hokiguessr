@@ -6,11 +6,11 @@ class DBModel {
       connection.query(
         `SELECT * FROM ${this.tableName} WHERE ?`,
         [condition],
-        (err, locations) => {
+        (err, results) => {
           if (err) {
             reject(err);
           } else {
-            resolve(locations);
+            resolve(results);
           }
         }
       );
@@ -21,13 +21,13 @@ class DBModel {
       connection.query(
         `SELECT * FROM ${this.tableName} WHERE id = ?`,
         [id],
-        (err, location) => {
+        (err, result) => {
           if (err) {
             reject(err);
-          } else if (location.length === 0) {
+          } else if (result.length === 0) {
             reject({ type: 'NOT_FOUND' });
           } else {
-            resolve(location[0]);
+            resolve(result[0]);
           }
         }
       );
@@ -38,14 +38,14 @@ class DBModel {
       connection.query(
         `SELECT * FROM ${this.tableName} WHERE ?`,
         [condition],
-        (err, locations) => {
+        (err, results) => {
           if (err) {
             reject(err);
           } else {
-            if (locations.length === 0) {
+            if (results.length === 0) {
               resolve(null);
             } else {
-              resolve(locations[0]);
+              resolve(results[0]);
             }
           }
         }
