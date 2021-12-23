@@ -4,7 +4,8 @@ class Goal extends DBModel {
   static tableName = 'goal';
   constructor(goal) {
     super();
-    const { player_id, event_id, date } = goal;
+    const { id, player_id, event_id, date } = goal;
+    this.id = id;
     this.player_id = player_id;
     this.event_id = event_id;
     this.date = date;
