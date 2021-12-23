@@ -7,7 +7,10 @@ const getAll = async (req, res) => {
 
 const create = async (req, res) => {
   const { playerId, pointsRatio } = req.body;
-  const newPlayer = new Player({ playerId, pointsRatio });
+  const newPlayer = new Player({
+    player_id: playerId,
+    points_ratio: pointsRatio,
+  });
   const player = await newPlayer.save();
   res.json(player);
 };

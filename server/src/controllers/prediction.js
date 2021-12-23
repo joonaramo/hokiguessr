@@ -9,10 +9,10 @@ const create = async (req, res) => {
   const { pointsUsed, pointsRatio, playerId } = req.body;
   const date = new Date(Date.now());
   const newPrediction = new Prediction({
-    pointsUsed,
-    pointsRatio,
-    playerId,
-    userId: req.user.id,
+    points_used: pointsUsed,
+    points_ratio: pointsRatio,
+    player_id: playerId,
+    user_id: 3,
     created_at: date,
   });
   const prediction = await newPrediction.save();

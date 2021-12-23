@@ -4,13 +4,13 @@ class Prediction extends DBModel {
   static tableName = 'prediction';
   constructor(prediction) {
     super();
-    const { pointsUsed, pointsRatio, created_at, playerId, userId } =
+    const { points_used, points_ratio, created_at, player_id, user_id } =
       prediction;
-    this.points_used = pointsUsed;
-    this.points_ratio = pointsRatio;
+    this.points_used = points_used;
+    this.points_ratio = points_ratio;
     this.created_at = created_at;
-    this.player_id = playerId;
-    this.user_id = userId;
+    this.player_id = player_id;
+    this.user_id = user_id;
     this.tableName = 'prediction';
   }
 }
