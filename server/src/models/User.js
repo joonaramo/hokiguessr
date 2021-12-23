@@ -4,8 +4,9 @@ class User extends DBModel {
   static tableName = 'user';
   constructor(user) {
     super();
-    const { username, password, created_at, updated_at, points, is_admin } =
+    const { id, username, password, created_at, updated_at, points, is_admin } =
       user;
+    this.id = id;
     this.username = username;
     this.password = password;
     this.points = points;
