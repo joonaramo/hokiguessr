@@ -1,5 +1,4 @@
 const Prediction = require('../models/Prediction');
-const UserPrediction = require('../models/UserPrediction');
 
 const getAll = async (req, res) => {
   const predictions = await Prediction.find();
@@ -17,11 +16,6 @@ const create = async (req, res) => {
     created_at: date,
   });
   const prediction = await newPrediction.save();
-  const newUserPrediction = new UserPrediction({
-    userId: req.user.id,
-    predictionId: prediction.id,
-  });
-  await newUserPrediction.save();
   res.json(prediction);
 };
 
