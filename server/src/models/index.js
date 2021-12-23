@@ -1,4 +1,6 @@
 const connection = require('../utils/connectDB');
+// const Goal = require('./Goal');
+// const Prediction = require('./Prediction');
 
 class DBModel {
   static find(condition = true) {
@@ -10,7 +12,7 @@ class DBModel {
           if (err) {
             reject(err);
           } else {
-            resolve(results);
+            resolve(results.map((result) => new this(result)));
           }
         }
       );
@@ -27,7 +29,7 @@ class DBModel {
           } else if (result.length === 0) {
             reject({ type: 'NOT_FOUND' });
           } else {
-            resolve(result[0]);
+            resolve(new this(result[0]));
           }
         }
       );
@@ -45,7 +47,7 @@ class DBModel {
             if (results.length === 0) {
               resolve(null);
             } else {
-              resolve(results[0]);
+              resolve(new this(results[0]));
             }
           }
         }
@@ -74,13 +76,13 @@ class DBModel {
     delete data.tableName;
     return new Promise((resolve, reject) => {
       connection.query(
-        `INSERT INTO ${this.tableName} SET ?`,
-        data,
-        (err, { insertId }) => {
+        `INSERT INTO ${this.tableName} SET ? ON DUPLICATE KEY UPDATE ?`,
+        [data, data],
+        (err, result) => {
           if (err) {
             reject(err);
           } else {
-            resolve({ ...data, id: insertId });
+            resolve({ ...data, id: result.insertId });
           }
         }
       );
