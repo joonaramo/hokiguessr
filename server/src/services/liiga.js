@@ -51,12 +51,14 @@ const handleGoalEvent = async (goalEvent) => {
  * Get all players
  * @returns {array} All players from Liiga
  */
-const getPlayers = async () => {
+const getPlayers = async (teamId) => {
   try {
     const { data } = await axios.get(
       `${BASE_URL}/players/info?season=2021&tournament=runkosarja`
     );
-    return data;
+    return teamId
+      ? data.filter((player) => player.teamId.includes(teamId))
+      : data;
   } catch (err) {
     console.log(err);
   }
@@ -98,6 +100,8 @@ const poll = async () => {
 
 const liigaService = {
   poll,
+  getPlayers,
+  getTeams,
 };
 
 module.exports = liigaService;
