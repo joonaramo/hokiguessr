@@ -1,3 +1,4 @@
+const Player = require('../models/Player');
 const Prediction = require('../models/Prediction');
 const User = require('../models/User');
 
@@ -7,11 +8,16 @@ const getAll = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { pointsUsed, pointsRatio, playerId } = req.body;
+  const { pointsUsed, playerId } = req.body;
+  let points_ratio = 2.0;
   const date = new Date(Date.now());
+  const player = await Player.findOne({ player_id: playerId });
+  if (player) {
+    points_ratio = player.points_ratio;
+  }
   const newPrediction = new Prediction({
     points_used: pointsUsed,
-    points_ratio: pointsRatio,
+    points_ratio,
     player_id: playerId,
     user_id: req.user.id,
     created_at: date,
