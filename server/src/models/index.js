@@ -1,6 +1,4 @@
 const connection = require('../utils/connectDB');
-// const Goal = require('./Goal');
-// const Prediction = require('./Prediction');
 
 class DBModel {
   static find(condition = true) {
