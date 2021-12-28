@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.5",
+    "@tailwindcss/forms": "^0.4.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -10,11 +13,13 @@
     "date-fns": "^2.27.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.22.5",
     "react-query": "^3.34.6",
     "react-query-auth": "^1.1.0",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
+    "tailwindcss-children": "^2.1.0",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
