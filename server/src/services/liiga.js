@@ -66,14 +66,14 @@ const getPlayers = async (teamId) => {
  */
 const getTeams = async () => {
   const { data } = await axios.get(`${BASE_URL}/teams/info`);
-  return data;
+  return data.teams;
 };
 
 const getLiveGames = async () => {
   const { data } = await axios.get(
     `${BASE_URL}/games/poll/?tournament=runkosarja`
   );
-  return data;
+  return data.games;
 };
 
 /**
