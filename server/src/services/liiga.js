@@ -52,16 +52,12 @@ const handleGoalEvent = async (goalEvent) => {
  * @returns {array} All players from Liiga
  */
 const getPlayers = async (teamId) => {
-  try {
-    const { data } = await axios.get(
-      `${BASE_URL}/players/info?season=2021&tournament=runkosarja`
-    );
-    return teamId
-      ? data.filter((player) => player.teamId.includes(teamId))
-      : data;
-  } catch (err) {
-    console.log(err);
-  }
+  const { data } = await axios.get(
+    `${BASE_URL}/players/info?season=2021&tournament=runkosarja`
+  );
+  return teamId
+    ? data.filter((player) => player.teamId.includes(teamId))
+    : data;
 };
 
 /**
@@ -69,12 +65,15 @@ const getPlayers = async (teamId) => {
  * @returns {array} All teams from Liiga
  */
 const getTeams = async () => {
-  try {
-    const { data } = await axios.get(`${BASE_URL}/teams/info`);
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
+  const { data } = await axios.get(`${BASE_URL}/teams/info`);
+  return data;
+};
+
+const getLiveGames = async () => {
+  const { data } = await axios.get(
+    `${BASE_URL}/games/poll/?tournament=runkosarja`
+  );
+  return data;
 };
 
 /**
@@ -102,6 +101,7 @@ const liigaService = {
   poll,
   getPlayers,
   getTeams,
+  getLiveGames,
 };
 
 module.exports = liigaService;
