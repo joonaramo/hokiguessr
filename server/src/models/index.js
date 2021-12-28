@@ -27,7 +27,9 @@ class DBModel {
           } else if (result.length === 0) {
             reject({ type: 'NOT_FOUND' });
           } else {
-            resolve(new this(result[0]));
+            const obj = new this(result[0]);
+            delete obj.tableName;
+            resolve(obj);
           }
         }
       );
@@ -85,6 +87,14 @@ class DBModel {
         }
       );
     });
+  }
+  select(selector) {
+    const data = { ...this };
+    if (selector.includes('-')) {
+      const toDelete = selector.split('-')[1];
+      delete data[toDelete];
+    }
+    return data;
   }
 }
 

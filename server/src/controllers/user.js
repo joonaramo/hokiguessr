@@ -5,8 +5,8 @@ const getAll = async (req, res) => {
   res.json(users);
 };
 
-const playerController = {
+const userController = {
   getAll,
 };
 
-module.exports = playerController;
+module.exports = userController;

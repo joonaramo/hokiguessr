@@ -41,12 +41,12 @@ const logIn = async (req, res) => {
   const user = await User.findOne({ username });
   if (!user) {
     console.log('invalid credentials');
-    return;
+    return res.status(400).json({ error: 'invalid credentials' });
   }
   const passwordCorrect = await bcrypt.compare(password, user.password);
   if (!passwordCorrect) {
     console.log('invalid credentials');
-    return;
+    return res.status(400).json({ error: 'invalid credentials' });
   }
   const payload = {
     user: {
@@ -60,14 +60,25 @@ const logIn = async (req, res) => {
     { expiresIn: '7d' },
     (err, token) => {
       if (err) throw err;
-      return res.json({ token });
+      return res.json({ token, user: payload.user });
     }
   );
+};
+
+const getCurrent = async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    user = user.select('-password');
+    res.json(user);
+  } catch (err) {
+    return res.status(400).json({ error: 'Invalid request' });
+  }
 };
 
 const authController = {
   signUp,
   logIn,
+  getCurrent,
 };
 
 module.exports = authController;

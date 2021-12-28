@@ -13,9 +13,9 @@ const create = async (req, res) => {
   res.json(goal);
 };
 
-const playerController = {
+const goalController = {
   getAll,
   create,
 };
 
-module.exports = playerController;
+module.exports = goalController;
