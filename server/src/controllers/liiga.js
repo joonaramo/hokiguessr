@@ -16,10 +16,23 @@ const getLiveGames = async (req, res) => {
   res.json(games);
 };
 
+const getGames = async (req, res) => {
+  const games = await liigaService.getGames();
+  res.json(games);
+};
+
+const getGame = async (req, res) => {
+  const { season, gameId } = req.params;
+  const game = await liigaService.getGame(season, gameId);
+  res.json(game);
+};
+
 const liigaController = {
   getPlayers,
   getTeams,
   getLiveGames,
+  getGames,
+  getGame,
 };
 
 module.exports = liigaController;

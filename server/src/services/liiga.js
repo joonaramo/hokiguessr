@@ -76,6 +76,18 @@ const getLiveGames = async () => {
   return data.games;
 };
 
+const getGames = async () => {
+  const { data } = await axios.get(
+    `${BASE_URL}/games?tournament=runkosarja&season=2022`
+  );
+  return data;
+};
+
+const getGame = async (season, gameId) => {
+  const { data } = await axios.get(`${BASE_URL}/games/${season}/${gameId}`);
+  return data;
+};
+
 /**
  * Poll current games to check if new goals have been scored
  */
@@ -102,6 +114,8 @@ const liigaService = {
   getPlayers,
   getTeams,
   getLiveGames,
+  getGame,
+  getGames,
 };
 
 module.exports = liigaService;
