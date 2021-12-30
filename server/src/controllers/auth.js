@@ -31,14 +31,14 @@ const signUp = async (req, res) => {
     { expiresIn: '7d' },
     (err, token) => {
       if (err) throw err;
-      return res.json({ token });
+      return res.json({ token, user });
     }
   );
 };
 
 const logIn = async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  let user = await User.findOne({ username });
   if (!user) {
     console.log('invalid credentials');
     return res.status(400).json({ error: 'invalid credentials' });
@@ -60,7 +60,7 @@ const logIn = async (req, res) => {
     { expiresIn: '7d' },
     (err, token) => {
       if (err) throw err;
-      return res.json({ token, user: payload.user });
+      return res.json({ token, user });
     }
   );
 };
