@@ -13,7 +13,7 @@ export const Landing = () => {
       </div>
       <div
         aria-hidden='true'
-        className='absolute inset-0 bg-gray-900 opacity-50'
+        className='absolute inset-0 bg-gray-900 opacity-70'
       />
       <div className='relative h-screen max-w-3xl mx-auto py-32 px-6 flex flex-col items-center text-center sm:py-64 lg:px-0'>
         <h1 className='text-4xl font-extrabold tracking-tight text-white lg:text-6xl'>
