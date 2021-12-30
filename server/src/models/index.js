@@ -28,7 +28,6 @@ class DBModel {
             reject({ type: 'NOT_FOUND' });
           } else {
             const obj = new this(result[0]);
-            delete obj.tableName;
             resolve(obj);
           }
         }
@@ -93,6 +92,22 @@ class DBModel {
     if (selector.includes('-')) {
       const toDelete = selector.split('-')[1];
       delete data[toDelete];
+    }
+    return data;
+  }
+
+  /**
+   * Each time a db model object is called within JSON.stringify() function, this function will be fired (for example when res.json(object) is called)
+   * Therefore, we can get rid of some unneeded fields when returning JSON from our backend
+   * @returns
+   */
+  toJSON() {
+    const data = { ...this };
+    // Showing the tableName to user is useless
+    delete data.tableName;
+    // Definitely not smart to expose user's password hash
+    if (data.password) {
+      delete data.password;
     }
     return data;
   }
