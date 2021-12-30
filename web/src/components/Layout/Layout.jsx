@@ -1,30 +1,26 @@
 import { Fragment, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../lib/auth';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
-  CogIcon,
-  CollectionIcon,
   HomeIcon,
   MenuAlt2Icon,
-  PhotographIcon,
   PlusSmIcon,
   UserGroupIcon,
-  ViewGridIcon,
   XIcon,
+  UserCircleIcon,
+  ViewGridIcon,
 } from '@heroicons/react/outline';
+import { classNames } from '../../utils/classnames';
+import { LiveGames } from '../LiveGames';
+import logo from './logo.svg';
 
 const sidebarNavigation = [
   { name: 'Home', to: '.', icon: HomeIcon },
+  { name: 'Games', to: 'games', icon: ViewGridIcon },
   { name: 'Players', to: 'players', icon: UserGroupIcon },
 ];
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Sign out', href: '#' },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+const userNavigation = [{ name: 'Your Profile', href: '#' }];
 
 const SideNavigation = () => {
   return (
@@ -37,14 +33,14 @@ const SideNavigation = () => {
           className={({ isActive }) =>
             classNames(
               isActive
-                ? 'bg-indigo-800 children:text-white'
-                : 'text-indigo-300 hover:bg-indigo-800',
-              'children:hover:text-white group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium'
+                ? 'bg-black children:text-white'
+                : 'text-gray-300 hover:bg-black',
+              'children:hover:text-white group w-full px-3 py-2 md:p-3 rounded-md flex md:flex-col items-center text-sm md:text-xs font-medium'
             )
           }
         >
-          <item.icon className='h-6 w-6' aria-hidden='true' />
-          <span className='mt-2 text-indigo-100'>{item.name}</span>
+          <item.icon className='h-6 w-6 mr-3 md:mr-0' aria-hidden='true' />
+          <span className='mt-0 md:mt-2 text-gray-200'>{item.name}</span>
         </NavLink>
       ))}
     </>
@@ -76,7 +72,7 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
             leaveFrom='translate-x-0'
             leaveTo='-translate-x-full'
           >
-            <div className='relative max-w-xs w-full bg-indigo-700 pt-5 pb-4 flex-1 flex flex-col'>
+            <div className='relative max-w-xs w-full bg-gray-900 pt-5 pb-4 flex-1 flex flex-col'>
               <Transition.Child
                 as={Fragment}
                 enter='ease-in-out duration-300'
@@ -98,11 +94,8 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
                 </div>
               </Transition.Child>
               <div className='flex-shrink-0 px-4 flex items-center'>
-                <img
-                  className='h-8 w-auto'
-                  src='https://tailwindui.com/img/logos/workflow-mark.svg?color=white'
-                  alt='Workflow'
-                />
+                <img className='h-8 w-auto mr-3' src={logo} alt='Workflow' />
+                <h1 className='text-2xl text-white'>HokiGuessr</h1>
               </div>
               <div className='mt-5 flex-1 h-0 px-2 overflow-y-auto'>
                 <nav className='h-full flex flex-col'>
@@ -124,19 +117,16 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 
 export const Layout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <>
       <div className='h-full flex'>
         {/* Narrow sidebar */}
-        <div className='hidden w-28 bg-indigo-700 overflow-y-auto md:block'>
+        <div className='hidden w-28 bg-gray-900 overflow-y-auto md:block'>
           <div className='w-full py-6 flex flex-col items-center'>
             <div className='flex-shrink-0 flex items-center'>
-              <img
-                className='h-8 w-auto'
-                src='https://tailwindui.com/img/logos/workflow-mark.svg?color=white'
-                alt='Workflow'
-              />
+              <img className='h-8 w-auto' src={logo} alt='Workflow' />
             </div>
             <div className='flex-1 mt-6 w-full px-2 space-y-1'>
               <SideNavigation />
@@ -153,10 +143,10 @@ export const Layout = ({ children }) => {
         {/* Content area */}
         <div className='flex-1 flex flex-col overflow-hidden'>
           <header className='w-full'>
-            <div className='relative z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 shadow-sm flex'>
+            <div className='relative z-10 flex-shrink-0 h-16 bg-zinc-900 shadow shadow-black flex'>
               <button
                 type='button'
-                className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
+                className='border-r border-gray-700 px-4 text-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden'
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <span className='sr-only'>Open sidebar</span>
@@ -164,18 +154,17 @@ export const Layout = ({ children }) => {
               </button>
               <div className='flex-1 flex justify-between px-4 sm:px-6'>
                 <div className='flex items-center'>
-                  <h1 className='text-3xl'>HokiGuessr</h1>
+                  <h1 className='text-2xl text-white'>HokiGuessr</h1>
                 </div>
                 <div className='ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6'>
                   {/* Profile dropdown */}
                   <Menu as='div' className='relative flex-shrink-0'>
                     <div>
-                      <Menu.Button className='bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+                      <Menu.Button className='bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>
                         <span className='sr-only'>Open user menu</span>
-                        <img
-                          className='h-8 w-8 rounded-full'
-                          src='https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80'
-                          alt=''
+                        <UserCircleIcon
+                          className='h-9 w-9'
+                          aria-hidden='true'
                         />
                       </Menu.Button>
                     </div>
@@ -204,6 +193,19 @@ export const Layout = ({ children }) => {
                             )}
                           </Menu.Item>
                         ))}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={() => logout()}
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block w-full text-left px-4 py-2 text-sm text-gray-700'
+                              )}
+                            >
+                              Sign out
+                            </button>
+                          )}
+                        </Menu.Item>
                       </Menu.Items>
                     </Transition>
                   </Menu>
@@ -222,11 +224,13 @@ export const Layout = ({ children }) => {
 
           {/* Main content */}
           <div className='flex-1 flex items-stretch overflow-hidden'>
-            <main className='flex-1 overflow-y-auto'>{children}</main>
+            <main className='flex-1 overflow-y-auto bg-gray-800'>
+              {children}
+            </main>
 
             {/* Secondary column (hidden on smaller screens) */}
-            <aside className='hidden w-96 bg-white border-l border-gray-200 overflow-y-auto lg:block'>
-              {/* Your content */}
+            <aside className='hidden w-96 bg-gray-900 border-l border-gray-500 overflow-y-auto lg:block'>
+              <LiveGames />
             </aside>
           </div>
         </div>
