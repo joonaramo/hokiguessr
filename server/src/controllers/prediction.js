@@ -3,7 +3,7 @@ const Prediction = require('../models/Prediction');
 const User = require('../models/User');
 
 const getAll = async (req, res) => {
-  const predictions = await Prediction.find();
+  const predictions = await Prediction.find({ user_id: req.user.id });
   res.json(predictions);
 };
 
@@ -27,6 +27,7 @@ const create = async (req, res) => {
     return res.status(400).json({ error: 'Insufficient points' });
   }
   user.points = user.points - pointsUsed;
+  await user.save();
   const prediction = await newPrediction.save();
   res.json(prediction);
 };
