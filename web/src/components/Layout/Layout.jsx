@@ -1,12 +1,11 @@
 import { Fragment, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   HomeIcon,
   MenuAlt2Icon,
-  PlusSmIcon,
-  UserGroupIcon,
+  TableIcon,
   XIcon,
   UserCircleIcon,
   ViewGridIcon,
@@ -14,15 +13,17 @@ import {
 import { classNames } from '../../utils/classnames';
 import { LiveGames } from '../LiveGames';
 import logo from './logo.svg';
+import storage from '../../utils/storage';
+import { useQueryClient } from 'react-query';
 
 const sidebarNavigation = [
   { name: 'Home', to: '.', icon: HomeIcon },
   { name: 'Games', to: 'games', icon: ViewGridIcon },
-  { name: 'Players', to: 'players', icon: UserGroupIcon },
+  { name: 'Predictions', to: 'predictions', icon: TableIcon },
 ];
 const userNavigation = [{ name: 'Your Profile', href: '#' }];
 
-const SideNavigation = () => {
+const SideNavigation = ({ setMobileMenuOpen }) => {
   return (
     <>
       {sidebarNavigation.map((item, idx) => (
@@ -30,6 +31,7 @@ const SideNavigation = () => {
           end={idx === 0}
           key={item.name}
           to={item.to}
+          onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
           className={({ isActive }) =>
             classNames(
               isActive
@@ -100,7 +102,7 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
               <div className='mt-5 flex-1 h-0 px-2 overflow-y-auto'>
                 <nav className='h-full flex flex-col'>
                   <div className='space-y-1'>
-                    <SideNavigation />
+                    <SideNavigation setMobileMenuOpen={setMobileMenuOpen} />
                   </div>
                 </nav>
               </div>
@@ -117,7 +119,16 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
 
 export const Layout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { refetchUser } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const logout = async () => {
+    storage.clearToken();
+    queryClient.clear();
+    await refetchUser();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -209,14 +220,6 @@ export const Layout = ({ children }) => {
                       </Menu.Items>
                     </Transition>
                   </Menu>
-
-                  <button
-                    type='button'
-                    className='flex bg-indigo-600 p-1 rounded-full items-center justify-center text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                  >
-                    <PlusSmIcon className='h-6 w-6' aria-hidden='true' />
-                    <span className='sr-only'>Add file</span>
-                  </button>
                 </div>
               </div>
             </div>

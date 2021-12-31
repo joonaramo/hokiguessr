@@ -8,19 +8,7 @@ import { Spinner } from '../../components/Spinner';
 
 export const GameCard = ({ game, getTeamName }) => {
   const [showPredictionForm, setShowPredictionForm] = useState(false);
-  const homePlayers = useQuery(`players-${game.homeTeam.teamId}`, () =>
-    liigaService.getPlayers(game.homeTeam.teamId)
-  );
-  const awayPlayers = useQuery(`players-${game.awayTeam.teamId}`, () =>
-    liigaService.getPlayers(game.awayTeam.teamId)
-  );
-  if (homePlayers.isLoading || awayPlayers.isLoading) {
-    return (
-      <div className='w-full h-48 flex justify-center items-center'>
-        <Spinner size='lg' />
-      </div>
-    );
-  }
+
   return (
     <li>
       <Card>
@@ -39,15 +27,15 @@ export const GameCard = ({ game, getTeamName }) => {
         </div>
         <div>
           <div className='-mt-px flex divide-x divide-gray-200'>
-            <div className='w-0 flex-1 flex justify-center py-4'>
+            <div className='flex-1 flex justify-center w-full p-4'>
               {showPredictionForm ? (
                 <PredictionForm
                   onSuccess={() => setShowPredictionForm(false)}
                   setShowPredictionForm={setShowPredictionForm}
-                  homeTeamPlayers={homePlayers.data}
-                  awayTeamPlayers={awayPlayers.data}
                   homeTeamName={getTeamName(game.homeTeam.teamId)}
                   awayTeamName={getTeamName(game.awayTeam.teamId)}
+                  gameId={game.id}
+                  season={game.season}
                 />
               ) : (
                 <button

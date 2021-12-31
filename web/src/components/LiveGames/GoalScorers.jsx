@@ -8,7 +8,7 @@ export const GoalScorers = ({
   season,
   gameId,
 }) => {
-  const game = useQuery(`game-${gameId}`, () =>
+  const game = useQuery(['liigaGame', { season, gameId }], () =>
     liigaService.getGame(season, gameId)
   );
 
@@ -38,14 +38,20 @@ export const GoalScorers = ({
     <div className='w-full flex p-3'>
       <div className='flex flex-wrap flex-col text-center w-1/2'>
         {homeTeamGoals.map((goal) => (
-          <p key={goal.eventId} className='text-gray-500 text-sm truncate'>
+          <p
+            key={goal.eventId}
+            className='text-gray-500 text-sm truncate tracking-wider w-full'
+          >
             {getPlayerName(goal.scorerPlayerId, 'home')}
           </p>
         ))}
       </div>
       <div className='flex flex-wrap flex-col text-center w-1/2'>
         {awayTeamGoals.map((goal) => (
-          <p key={goal.eventId} className='text-gray-500 text-sm truncate'>
+          <p
+            key={goal.eventId}
+            className='text-gray-500 text-sm truncate tracking-wider w-full'
+          >
             {getPlayerName(goal.scorerPlayerId, 'away')}
           </p>
         ))}

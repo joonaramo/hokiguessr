@@ -1,7 +1,11 @@
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        'spin-fast': 'spin 0.5s linear infinite',
+      },
+    },
   },
   variants: {
     extend: {
