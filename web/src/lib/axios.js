@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { useNotificationStore } from '../stores/notification';
 
 import { API_URL } from '../utils/constants';
 import storage from '../utils/storage';
@@ -20,15 +21,15 @@ axios.interceptors.request.use(authRequestInterceptor);
 axios.interceptors.response.use(
   (response) => {
     return response.data;
-  }
-  // (error) => {
-  //   const message = error.response?.data?.message || error.message;
-  //   useNotificationStore.getState().addNotification({
-  //     type: 'error',
-  //     title: 'Error',
-  //     message,
-  //   });
+  },
+  (error) => {
+    const message = error.response?.data?.message || error.message;
+    useNotificationStore.getState().addNotification({
+      type: 'error',
+      title: 'Error',
+      message,
+    });
 
-  //   return Promise.reject(error);
-  // }
+    return Promise.reject(error);
+  }
 );
