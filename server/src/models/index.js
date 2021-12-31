@@ -1,19 +1,21 @@
+const mysql = require('mysql');
 const connection = require('../utils/connectDB');
 
 class DBModel {
   static find(condition = true) {
     return new Promise((resolve, reject) => {
-      connection.query(
+      let sql = mysql.format(
         `SELECT * FROM ${this.tableName} WHERE ?`,
-        [condition],
-        (err, results) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(results.map((result) => new this(result)));
-          }
-        }
+        condition
       );
+      sql = sql.replace(',', ' AND');
+      connection.query(sql, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results.map((result) => new this(result)));
+        }
+      });
     });
   }
   static findById(id) {
@@ -36,21 +38,22 @@ class DBModel {
   }
   static findOne(condition = true) {
     return new Promise((resolve, reject) => {
-      connection.query(
+      let sql = mysql.format(
         `SELECT * FROM ${this.tableName} WHERE ?`,
-        [condition],
-        (err, results) => {
-          if (err) {
-            reject(err);
+        condition
+      );
+      sql = sql.replace(',', ' AND');
+      connection.query(sql, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (results.length === 0) {
+            resolve(null);
           } else {
-            if (results.length === 0) {
-              resolve(null);
-            } else {
-              resolve(new this(results[0]));
-            }
+            resolve(new this(results[0]));
           }
         }
-      );
+      });
     });
   }
   static deleteById(id) {

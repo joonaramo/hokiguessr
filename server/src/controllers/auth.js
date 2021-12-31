@@ -40,13 +40,11 @@ const logIn = async (req, res) => {
   const { username, password } = req.body;
   let user = await User.findOne({ username });
   if (!user) {
-    console.log('invalid credentials');
-    return res.status(400).json({ error: 'invalid credentials' });
+    return res.status(400).json({ message: 'Invalid credentials' });
   }
   const passwordCorrect = await bcrypt.compare(password, user.password);
   if (!passwordCorrect) {
-    console.log('invalid credentials');
-    return res.status(400).json({ error: 'invalid credentials' });
+    return res.status(400).json({ message: 'Invalid credentials' });
   }
   const payload = {
     user: {
@@ -71,7 +69,7 @@ const getCurrent = async (req, res) => {
     user = user.select('-password');
     res.json(user);
   } catch (err) {
-    return res.status(400).json({ error: 'Invalid request' });
+    return res.status(400).json({ message: 'Invalid request' });
   }
 };
 

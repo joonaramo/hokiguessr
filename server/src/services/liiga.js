@@ -33,15 +33,17 @@ const handleGoalEvent = async (goalEvent) => {
         player_id: goalEvent.scorerPlayerId,
       });
       predictions.forEach(async (prediction) => {
-        prediction.completed_at = new Date(goalEvent.logTime);
-        prediction.completed = 1;
-        prediction.correct = 1;
-        await prediction.save();
-        const user_id = prediction.user_id;
-        const user = await User.findById(user_id);
-        user.points =
-          user.points + prediction.points_used * prediction.points_ratio;
-        await user.save();
+        if (!prediction.completed) {
+          prediction.completed_at = new Date(goalEvent.logTime);
+          prediction.completed = 1;
+          prediction.correct = 1;
+          await prediction.save();
+          const user_id = prediction.user_id;
+          const user = await User.findById(user_id);
+          user.points =
+            user.points + prediction.points_used * prediction.points_ratio;
+          await user.save();
+        }
       });
     }
   }
@@ -83,7 +85,7 @@ const getGames = async () => {
   return data;
 };
 
-const getGame = async (season, gameId) => {
+const getGame = async (season = 2022, gameId) => {
   const { data } = await axios.get(`${BASE_URL}/games/${season}/${gameId}`);
   return data;
 };
@@ -92,11 +94,10 @@ const getGame = async (season, gameId) => {
  * Poll current games to check if new goals have been scored
  */
 const poll = async () => {
-  console.log('polled');
-  // const { data } = await axios.get(`${BASE_URL}/games/poll`);
-  const data = mockData;
+  const { data } = await axios.get(`${BASE_URL}/games/poll`);
+  // const data = mockData;
   if (data.games.length > 0) {
-    data.games.map((g) => {
+    data.games.map(async (g) => {
       g.homeTeam.goalEvents &&
         g.homeTeam.goalEvents.map(async (goalEvent) => {
           await handleGoalEvent(goalEvent);
@@ -105,6 +106,17 @@ const poll = async () => {
         g.awayTeam.goalEvents.map(async (goalEvent) => {
           await handleGoalEvent(goalEvent);
         });
+      if (g.ended) {
+        const predictions = await Prediction.find({
+          game_id: g.id,
+          completed: 0,
+        });
+        predictions.forEach(async (prediction) => {
+          prediction.completed = 1;
+          prediction.completed_at = new Date(Date.now());
+          await prediction.save();
+        });
+      }
     });
   }
 };
