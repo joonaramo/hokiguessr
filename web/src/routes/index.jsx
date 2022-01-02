@@ -5,6 +5,8 @@ import { useAuth } from '../lib/auth';
 import { Layout } from '../components/Layout/Layout';
 import { Dashboard } from '../pages/Dashboard';
 import { Games } from '../pages/Games';
+import { Signup } from '../pages/auth/Signup';
+import { Predictions } from '../pages/Predictions';
 
 const App = () => {
   return (
@@ -26,6 +28,10 @@ export const AppRoutes = () => {
       element: !user ? <Login /> : <Navigate to='/app' />,
     },
     {
+      path: '/signup',
+      element: !user ? <Signup /> : <Navigate to='/app' />,
+    },
+    {
       path: '/app',
       element: user ? <App /> : <Navigate to='/login' />,
       children: [
@@ -36,6 +42,10 @@ export const AppRoutes = () => {
         {
           path: 'games',
           element: <Games />,
+        },
+        {
+          path: 'predictions',
+          element: <Predictions />,
         },
       ],
     },

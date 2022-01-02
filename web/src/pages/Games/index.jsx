@@ -33,7 +33,7 @@ export const Games = () => {
   return (
     <ContentLayout darkBg={true} title='Upcoming Games'>
       <h2 className='mt-4'>{nextGameDay}</h2>
-      <ul className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-4'>
+      <ul className='grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4'>
         {nextGameDayGames.map((game) => (
           <GameCard key={game.id} game={game} getTeamName={getTeamName} />
         ))}

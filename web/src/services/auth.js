@@ -1,8 +1,11 @@
 import { axios } from '../lib/axios';
 
 const login = async (credentials) => {
-  const data = await axios.post('/auth/login', credentials);
-  return data;
+  return await axios.post('/auth/login', credentials);
+};
+
+const signup = async (data) => {
+  return await axios.post('/auth/signup', data);
 };
 
 const getCurrent = async () => {
@@ -12,6 +15,7 @@ const getCurrent = async () => {
 
 const authService = {
   login,
+  signup,
   getCurrent,
 };
 

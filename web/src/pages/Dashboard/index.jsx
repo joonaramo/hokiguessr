@@ -40,20 +40,20 @@ export const Dashboard = () => {
   return (
     <>
       <ContentLayout darkBg={true} title={`Hey, ${user.username}!`}>
-        <div className='mt-4 flex space-x-4'>
-          <Card className='w-1/4 flex flex-col text-center justify-center p-6'>
+        <div className='mt-4 grid grid-cols-2 md:grid-cols-4 gap-4'>
+          <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>{user.points}</h2>
             <h3>Points</h3>
           </Card>
-          <Card className='w-1/4 flex flex-col text-center justify-center p-6'>
+          <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>{predictions.data.length}</h2>
             <h3>Predictions</h3>
           </Card>
-          <Card className='w-1/4 flex flex-col text-center justify-center p-6'>
+          <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>{predictions.data.reduce(reducer, 0)}</h2>
             <h3>Points used</h3>
           </Card>
-          <Card className='w-1/4 flex flex-col text-center justify-center p-6'>
+          <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>
               {predictions.data
                 .filter((prediction) => prediction.correct)
@@ -64,7 +64,15 @@ export const Dashboard = () => {
         </div>
       </ContentLayout>
 
-      <ContentLayout darkBg={true} title='Your active predictions'>
+      <ContentLayout
+        darkBg={true}
+        title='Your active predictions'
+        buttonElement={
+          <LinkButton className='py-2' to='games'>
+            New Prediction
+          </LinkButton>
+        }
+      >
         <div className='mt-4'>
           {predictions.data.filter((prediction) => !prediction.completed_at)
             .length > 0 ? (
@@ -78,9 +86,6 @@ export const Dashboard = () => {
           ) : (
             <p>You have no active predictions.</p>
           )}
-          <LinkButton to='games' className='mt-3'>
-            New Prediction
-          </LinkButton>
         </div>
       </ContentLayout>
     </>
