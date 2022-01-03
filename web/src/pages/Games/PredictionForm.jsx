@@ -5,6 +5,8 @@ import { Spinner } from '../../components/Spinner';
 import { useCreatePrediction } from '../../hooks/useCreatePrediction';
 import { useGame } from '../../hooks/useGame';
 import { PlayerSelect } from './PlayerSelect';
+import * as yup from 'yup';
+import { useState } from 'react';
 
 export const PredictionForm = ({
   onSuccess,
@@ -16,6 +18,21 @@ export const PredictionForm = ({
 }) => {
   const gameQuery = useGame(season, gameId);
   const createPrediction = useCreatePrediction();
+  const [errors, setErrors] = useState([]);
+
+  const schema = yup
+    .object({
+      playerId: yup
+        .number()
+        .typeError('Player is required')
+        .required('Player is required'),
+      pointsUsed: yup
+        .number()
+        .positive('Points must be greater than zero')
+        .typeError('Points is required')
+        .required('Points is required'),
+    })
+    .required();
 
   if (gameQuery.isLoading) {
     return (
@@ -45,9 +62,14 @@ export const PredictionForm = ({
       className='w-full'
       onSubmit={async (values) => {
         const { playerId, pointsUsed } = values;
-        await createPrediction.mutateAsync({ playerId, pointsUsed, gameId });
-        onSuccess();
+        try {
+          await createPrediction.mutateAsync({ playerId, pointsUsed, gameId });
+          onSuccess();
+        } catch (err) {
+          setErrors(err.response?.data);
+        }
       }}
+      schema={schema}
     >
       {({ register, formState, control }) => (
         <>
@@ -57,12 +79,19 @@ export const PredictionForm = ({
             homeTeamName={homeTeamName}
             awayTeamName={awayTeamName}
             control={control}
+            error={formState.errors['playerId']}
+            setErrors={setErrors}
           />
           <InputField
             type='number'
-            label='Points'
-            error={formState.errors['pointsUsed']}
-            registration={register('pointsUsed')}
+            label='Points to use'
+            error={
+              formState.errors['pointsUsed'] ||
+              errors.find((e) => e.field === 'pointsUsed')
+            }
+            registration={register('pointsUsed', {
+              onChange: () => setErrors([]),
+            })}
           />
           <div>
             <Button

@@ -1,5 +1,6 @@
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
+import { FieldWrapper } from '../../components/Form/FieldWrapper';
 
 const groupStyles = {
   display: 'flex',
@@ -33,6 +34,7 @@ export const PlayerSelect = ({
   homeTeamName,
   awayTeamName,
   control,
+  error,
 }) => {
   const homeTeamOptions = homeTeamPlayers.map((player) => {
     return {
@@ -63,17 +65,19 @@ export const PlayerSelect = ({
       defaultValue={homeTeamOptions[0]}
       name='playerId'
       render={({ field: { onChange, value, ref } }) => (
-        <Select
-          inputRef={ref}
-          formatGroupLabel={formatGroupLabel}
-          options={groupedOptions}
-          value={groupedOptions.map((o) =>
-            o.options.find((c) => {
-              return value.toString().includes(c.value.toString());
-            })
-          )}
-          onChange={(val) => onChange(val.value)}
-        />
+        <FieldWrapper label='Player' error={error}>
+          <Select
+            inputRef={ref}
+            formatGroupLabel={formatGroupLabel}
+            options={groupedOptions}
+            value={groupedOptions.map((o) =>
+              o.options.find((c) => {
+                return value.toString().includes(c.value.toString());
+              })
+            )}
+            onChange={(val) => onChange(val.value)}
+          />
+        </FieldWrapper>
       )}
     />
   );

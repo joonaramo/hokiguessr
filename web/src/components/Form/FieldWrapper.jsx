@@ -1,8 +1,14 @@
+import { classNames } from '../../utils/classnames';
+
 export const FieldWrapper = ({ label, className, error, children }) => {
-  const classes = className + ' block text-sm font-medium text-gray-700';
   return (
     <div>
-      <label className={classes}>
+      <label
+        className={classNames(
+          className,
+          'block text-sm font-medium text-gray-700'
+        )}
+      >
         {label}
         <div className='mt-1'>{children}</div>
       </label>

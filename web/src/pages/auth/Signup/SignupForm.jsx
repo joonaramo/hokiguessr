@@ -28,7 +28,7 @@ export const SignupForm = ({ onSuccess }) => {
           await register({ username, password });
           onSuccess();
         } catch (err) {
-          setErrors(err.response.data);
+          setErrors(err.response?.data);
         }
       }}
       schema={schema}
