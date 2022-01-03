@@ -1,10 +1,24 @@
+import { useState } from 'react';
 import { useAuth } from '../../../lib/auth';
 import { Form } from '../../../components/Form';
 import { InputField } from '../../../components/Form';
 import { Button } from '../../../components/Button';
+import * as yup from 'yup';
 
 export const SignupForm = ({ onSuccess }) => {
   const { register, isRegistering } = useAuth();
+  const [errors, setErrors] = useState([]);
+
+  const schema = yup
+    .object({
+      username: yup.string().min(3).max(60).required('Username is required'),
+      password: yup.string().min(8).max(60).required('Password is required'),
+      confirmPassword: yup
+        .string()
+        .required('Password  must be confirmed')
+        .oneOf([yup.ref('password')], 'Passwords do not match'),
+    })
+    .required();
 
   return (
     <Form
@@ -14,17 +28,23 @@ export const SignupForm = ({ onSuccess }) => {
           await register({ username, password });
           onSuccess();
         } catch (err) {
-          console.error(err);
+          setErrors(err.response.data);
         }
       }}
+      schema={schema}
     >
       {({ register, formState }) => (
         <>
           <InputField
             type='text'
             label='Username'
-            error={formState.errors['username']}
-            registration={register('username')}
+            error={
+              formState.errors['username'] ||
+              errors.find((e) => e.field === 'username')
+            }
+            registration={register('username', {
+              onChange: () => setErrors([]),
+            })}
           />
           <InputField
             type='password'

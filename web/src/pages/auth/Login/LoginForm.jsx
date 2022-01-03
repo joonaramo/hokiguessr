@@ -2,10 +2,17 @@ import { useAuth } from '../../../lib/auth';
 import { Form } from '../../../components/Form';
 import { InputField } from '../../../components/Form';
 import { Button } from '../../../components/Button';
-import { LinkButton } from '../../../components/Button';
+import * as yup from 'yup';
 
 export const LoginForm = ({ onSuccess }) => {
   const { login, isLoggingIn } = useAuth();
+
+  const schema = yup
+    .object({
+      username: yup.string().required('Username is required'),
+      password: yup.string().required('Password is required'),
+    })
+    .required();
 
   return (
     <Form
@@ -17,6 +24,7 @@ export const LoginForm = ({ onSuccess }) => {
           console.error(err);
         }
       }}
+      schema={schema}
     >
       {({ register, formState }) => (
         <>

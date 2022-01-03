@@ -84,7 +84,10 @@ class DBModel {
           if (err) {
             reject(err);
           } else {
-            resolve({ ...data, id: result.insertId });
+            if (!this.id) {
+              this.id = result.insertId;
+            }
+            resolve(this);
           }
         }
       );
@@ -100,13 +103,14 @@ class DBModel {
   }
 
   /**
-   * Each time a db model object is called within JSON.stringify() function, this function will be fired (for example when res.json(object) is called)
+   * Each time a db model object is called within JSON.stringify() function, this function will be fired
+   * (for example when res.json(object) is called)
    * Therefore, we can get rid of some unneeded fields when returning JSON from our backend
    * @returns
    */
   toJSON() {
     const data = { ...this };
-    // Showing the tableName to user is useless
+    // Showing the tableName is useless
     delete data.tableName;
     // Definitely not smart to expose user's password hash
     if (data.password) {

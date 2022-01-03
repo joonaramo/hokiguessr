@@ -23,13 +23,27 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const message = error.response?.data?.message || error.message;
-    useNotificationStore.getState().addNotification({
-      type: 'error',
-      title: 'Error',
-      message,
-    });
-
+    const errors = error.response?.data;
+    if (errors && errors.length > 0) {
+      errors.forEach((error) => {
+        if (!error.field) {
+          const message = error.message;
+          useNotificationStore.getState().addNotification({
+            type: 'error',
+            title: 'Error',
+            message,
+          });
+        }
+      });
+    } else {
+      const message = error.message;
+      console.log(JSON.stringify(error));
+      useNotificationStore.getState().addNotification({
+        type: 'error',
+        title: 'Error',
+        message,
+      });
+    }
     return Promise.reject(error);
   }
 );

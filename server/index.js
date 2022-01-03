@@ -12,11 +12,12 @@ app.use(cors());
 app.use(middleware.tokenExtractor);
 app.use(express.json());
 
-const pollingEnabled = false;
+const pollingEnabled = true;
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   routes(app);
+  app.use(middleware.errorHandler);
   if (pollingEnabled) {
     liigaService.poll();
     cron.schedule('* * * * *', async () => {
