@@ -1,5 +1,4 @@
-import { useQuery } from 'react-query';
-import liigaService from '../../services/liiga';
+import { useGame } from '../../hooks/useGame';
 import { Spinner } from '../Spinner';
 
 export const GoalScorers = ({
@@ -8,11 +7,9 @@ export const GoalScorers = ({
   season,
   gameId,
 }) => {
-  const game = useQuery(['liigaGame', { season, gameId }], () =>
-    liigaService.getGame(season, gameId)
-  );
+  const gameQuery = useGame(season, gameId);
 
-  if (game.isLoading) {
+  if (gameQuery.isLoading) {
     return (
       <div className='w-full h-48 flex justify-center items-center'>
         <Spinner size='lg' />
@@ -23,11 +20,11 @@ export const GoalScorers = ({
   const getPlayerName = (playerId, team) => {
     let player;
     if (team === 'home') {
-      player = game.data.homeTeamPlayers.find(
+      player = gameQuery.data.homeTeamPlayers.find(
         (player) => player.id === playerId
       );
     } else {
-      player = game.data.awayTeamPlayers.find(
+      player = gameQuery.data.awayTeamPlayers.find(
         (player) => player.id === playerId
       );
     }

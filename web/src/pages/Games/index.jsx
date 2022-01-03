@@ -1,14 +1,14 @@
-import { useQuery } from 'react-query';
 import { ContentLayout } from '../../components/Layout/ContentLayout';
 import { Spinner } from '../../components/Spinner';
-import liigaService from '../../services/liiga';
+import { useGames } from '../../hooks/useGames';
+import { useTeams } from '../../hooks/useTeams';
 import { GameCard } from './GameCard';
 
 export const Games = () => {
-  const games = useQuery('liigaGames', liigaService.getGames);
-  const teams = useQuery('liigaTeams', liigaService.getTeams);
+  const gamesQuery = useGames();
+  const teamsQuery = useTeams();
 
-  if (games.isLoading || teams.isLoading) {
+  if (gamesQuery.isLoading || teamsQuery.isLoading) {
     return (
       <div className='w-full h-48 flex justify-center items-center'>
         <Spinner size='lg' />
@@ -17,10 +17,10 @@ export const Games = () => {
   }
 
   const getTeamName = (teamId) => {
-    return teams.data[teamId].name;
+    return teamsQuery.data[teamId].name;
   };
 
-  const upcomingGames = games.data.filter(
+  const upcomingGames = gamesQuery.data.filter(
     (game) => new Date(game.start).getTime() > new Date(Date.now()).getTime()
   );
 
