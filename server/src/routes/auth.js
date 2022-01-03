@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require('express').Router();
+const router = require('@root/async-router').wrap(express);
+
 const authController = require('../controllers/auth');
 const { checkAuth } = require('../utils/middleware');
 const Joi = require('joi');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
 });
-
-const router = express.Router();
 
 const loginSchema = Joi.object({
   username: Joi.string().required(),

@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require('express').Router();
+const router = require('@root/async-router').wrap(express);
 const liigaController = require('../controllers/liiga');
-const router = express.Router();
 
 router.get('/players', liigaController.getPlayers);
 router.get('/teams', liigaController.getTeams);

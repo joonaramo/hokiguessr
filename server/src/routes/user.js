@@ -1,7 +1,8 @@
-const express = require('express');
+const express = require('express').Router();
+const router = require('@root/async-router').wrap(express);
 const userController = require('../controllers/user');
-const router = express.Router();
+const { checkAdmin } = require('../utils/middleware');
 
-router.get('/', userController.getAll);
+router.get('/', checkAdmin, userController.getAll);
 
 module.exports = router;

@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require('express').Router();
+const router = require('@root/async-router').wrap(express);
 const playerController = require('../controllers/player');
-const router = express.Router();
 
 const Joi = require('joi');
 const { checkAdmin } = require('../utils/middleware');

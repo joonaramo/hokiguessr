@@ -1,7 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express').Router();
+const router = require('@root/async-router').wrap(express);
 const predictionController = require('../controllers/prediction');
 const { checkAuth } = require('../utils/middleware');
+
 const Joi = require('joi');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
