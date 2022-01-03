@@ -12,9 +12,9 @@ class Prediction extends DBModel {
       player_id,
       user_id,
       game_id,
-      completed,
+      completed = 0,
       completed_at,
-      correct,
+      correct = 0,
     } = prediction;
     this.id = id;
     this.points_used = points_used;
