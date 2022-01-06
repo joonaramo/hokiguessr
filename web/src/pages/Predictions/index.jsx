@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ContentLayout } from '../../components/Layout/ContentLayout';
 import { Spinner } from '../../components/Spinner';
 import { usePredictions } from '../../hooks/usePredictions';
-import { Pagination } from './Pagination';
+import { Pagination } from '../../components/Table';
 import { PredictionTable } from './PredictionTable';
 
 export const Predictions = () => {

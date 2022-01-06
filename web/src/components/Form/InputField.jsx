@@ -7,11 +7,13 @@ export const InputField = ({
   registration,
   onChange,
   error,
+  step,
 }) => {
   return (
     <FieldWrapper label={label} error={error}>
       <input
         type={type}
+        step={step}
         onChange={onChange}
         className={classNames(
           error

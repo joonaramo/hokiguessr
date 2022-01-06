@@ -4,9 +4,23 @@ import { Button } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
 import { useCreatePrediction } from '../../hooks/useCreatePrediction';
 import { useGame } from '../../hooks/useGame';
-import { PlayerSelect } from './PlayerSelect';
+import { PlayerSelect } from '../../components/Form/PlayerSelect';
 import * as yup from 'yup';
 import { useState } from 'react';
+
+const schema = yup
+  .object({
+    playerId: yup
+      .number()
+      .typeError('Player is required')
+      .required('Player is required'),
+    pointsUsed: yup
+      .number()
+      .positive('Points must be greater than zero')
+      .typeError('Points is required')
+      .required('Points is required'),
+  })
+  .required();
 
 export const PredictionForm = ({
   onSuccess,
@@ -19,20 +33,6 @@ export const PredictionForm = ({
   const gameQuery = useGame(season, gameId);
   const createPrediction = useCreatePrediction();
   const [errors, setErrors] = useState([]);
-
-  const schema = yup
-    .object({
-      playerId: yup
-        .number()
-        .typeError('Player is required')
-        .required('Player is required'),
-      pointsUsed: yup
-        .number()
-        .positive('Points must be greater than zero')
-        .typeError('Points is required')
-        .required('Points is required'),
-    })
-    .required();
 
   if (gameQuery.isLoading) {
     return (
@@ -57,6 +57,25 @@ export const PredictionForm = ({
     );
   }
 
+  const { homeTeamPlayers, awayTeamPlayers } = gameQuery.data;
+
+  const homeTeamOptions = homeTeamPlayers.map((player) => {
+    return {
+      value: player.id,
+      label: `${player.lastName} ${player.firstName}`,
+    };
+  });
+  const awayTeamOptions = awayTeamPlayers.map((player) => {
+    return {
+      value: player.id,
+      label: `${player.lastName} ${player.firstName}`,
+    };
+  });
+  const options = [
+    { label: homeTeamName, options: homeTeamOptions },
+    { label: awayTeamName, options: awayTeamOptions },
+  ];
+
   return (
     <Form
       className='w-full'
@@ -74,10 +93,7 @@ export const PredictionForm = ({
       {({ register, formState, control }) => (
         <>
           <PlayerSelect
-            homeTeamPlayers={gameQuery.data.homeTeamPlayers}
-            awayTeamPlayers={gameQuery.data.awayTeamPlayers}
-            homeTeamName={homeTeamName}
-            awayTeamName={awayTeamName}
+            options={options}
             control={control}
             error={formState.errors['playerId']}
             setErrors={setErrors}
