@@ -1,9 +1,11 @@
 import { useQuery, useQueryClient } from 'react-query';
 import liigaService from '../services/liiga';
 import { useNotificationStore } from '../stores/notification';
+import { usePlayers } from './usePlayers';
 
-export const useLiveGames = (getPlayerName) => {
+export const useLiveGames = () => {
   const { addNotification } = useNotificationStore();
+  const playersQuery = usePlayers();
   const queryClient = useQueryClient();
   const prevData = queryClient.getQueryData('liveGames');
 
@@ -30,10 +32,14 @@ export const useLiveGames = (getPlayerName) => {
             !goal.goalTypes.includes('VL')
         );
         newGoals.forEach((goal) => {
+          const player = playersQuery.data.find(
+            (player) => player.id === goal.scorerPlayerId
+          );
+          const playerName = `${player.lastName} ${player.firstName}`;
           addNotification({
             type: 'info',
             title: 'New goal scored!',
-            message: `Player: ${getPlayerName(goal.scorerPlayerId)}`,
+            message: `Player: ${playerName}`,
           });
         });
       }
