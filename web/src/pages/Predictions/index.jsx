@@ -1,24 +1,15 @@
+import { useState } from 'react';
 import { ContentLayout } from '../../components/Layout/ContentLayout';
 import { Spinner } from '../../components/Spinner';
-import { usePlayers } from '../../hooks/usePlayers';
 import { usePredictions } from '../../hooks/usePredictions';
+import { Pagination } from './Pagination';
 import { PredictionTable } from './PredictionTable';
 
 export const Predictions = () => {
-  const predictionsQuery = usePredictions();
-  const playersQuery = usePlayers();
+  const [page, setPage] = useState(1);
+  const predictionsQuery = usePredictions(page);
 
-  const getPlayerName = (playerId) => {
-    const player = playersQuery.data.find((player) => player.id === playerId);
-    return `${player.lastName} ${player.firstName}`;
-  };
-
-  const getPlayerTeamName = (playerId) => {
-    const player = playersQuery.data.find((player) => player.id === playerId);
-    return player.teamId.split(':')[1].toUpperCase();
-  };
-
-  if (predictionsQuery.isLoading || playersQuery.isLoading) {
+  if (predictionsQuery.isLoading) {
     return (
       <div className='w-full h-48 flex justify-center items-center'>
         <Spinner size='lg' />
@@ -26,15 +17,23 @@ export const Predictions = () => {
     );
   }
 
+  const { offset, limit, total, hasMore } = predictionsQuery.data.paging;
+
   return (
     <ContentLayout darkBg={true} title='Predictions'>
       <div className='mt-4'>
-        {predictionsQuery.data.length > 0 ? (
-          <PredictionTable
-            getPlayerName={getPlayerName}
-            getPlayerTeamName={getPlayerTeamName}
-            predictions={predictionsQuery.data}
-          />
+        {predictionsQuery.data.predictions.length > 0 ? (
+          <>
+            <PredictionTable predictions={predictionsQuery.data.predictions} />
+            <Pagination
+              offset={offset}
+              limit={limit}
+              total={total}
+              page={page}
+              setPage={setPage}
+              hasMore={hasMore}
+            />
+          </>
         ) : (
           <p>You have no predictions.</p>
         )}

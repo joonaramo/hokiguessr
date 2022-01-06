@@ -5,12 +5,10 @@ import { PredictionTable } from './PredictionTable';
 import { usePredictions } from '../../hooks/usePredictions';
 import { LinkButton } from '../../components/Button';
 import { Spinner } from '../../components/Spinner';
-import { usePlayers } from '../../hooks/usePlayers';
 
 export const Dashboard = () => {
   const { user } = useAuth();
-  const predictionsQuery = usePredictions();
-  const playersQuery = usePlayers();
+  const predictionsQuery = usePredictions(1);
 
   const reducer = (previousValue, currentValue) =>
     previousValue + currentValue.points_used;
@@ -18,17 +16,7 @@ export const Dashboard = () => {
   const returnedReducer = (previousValue, currentValue) =>
     previousValue + currentValue.points_used * currentValue.points_ratio;
 
-  const getPlayerName = (playerId) => {
-    const player = playersQuery.data.find((player) => player.id === playerId);
-    return `${player.lastName} ${player.firstName}`;
-  };
-
-  const getPlayerTeamName = (playerId) => {
-    const player = playersQuery.data.find((player) => player.id === playerId);
-    return player.teamId.split(':')[1].toUpperCase();
-  };
-
-  if (predictionsQuery.isLoading || playersQuery.isLoading) {
+  if (predictionsQuery.isLoading) {
     return (
       <div className='w-full h-48 flex justify-center items-center'>
         <Spinner size='lg' />
@@ -45,18 +33,18 @@ export const Dashboard = () => {
             <h3>Points</h3>
           </Card>
           <Card className='flex flex-col text-center justify-center p-6'>
-            <h2 className='text-xl'>{predictionsQuery.data.length}</h2>
+            <h2 className='text-xl'>{predictionsQuery.data.paging.total}</h2>
             <h3>Predictions</h3>
           </Card>
           <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>
-              {predictionsQuery.data.reduce(reducer, 0)}
+              {predictionsQuery.data.predictions.reduce(reducer, 0)}
             </h2>
             <h3>Points used</h3>
           </Card>
           <Card className='flex flex-col text-center justify-center p-6'>
             <h2 className='text-xl'>
-              {predictionsQuery.data
+              {predictionsQuery.data.predictions
                 .filter((prediction) => prediction.correct)
                 .reduce(returnedReducer, 0)}
             </h2>
@@ -75,13 +63,11 @@ export const Dashboard = () => {
         }
       >
         <div className='mt-4'>
-          {predictionsQuery.data.filter(
+          {predictionsQuery.data.predictions.filter(
             (prediction) => !prediction.completed_at
           ).length > 0 ? (
             <PredictionTable
-              getPlayerName={getPlayerName}
-              getPlayerTeamName={getPlayerTeamName}
-              predictions={predictionsQuery.data.filter(
+              predictions={predictionsQuery.data.predictions.filter(
                 (prediction) => !prediction.completed_at
               )}
             />

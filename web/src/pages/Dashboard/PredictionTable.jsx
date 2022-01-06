@@ -1,10 +1,8 @@
 import { Table } from '../../components/Table';
+import { useGetPlayerName } from '../../hooks/useGetPlayerName';
+import { useGetPlayerTeamName } from '../../hooks/useGetPlayerTeamName';
 
-export const PredictionTable = ({
-  predictions,
-  getPlayerName,
-  getPlayerTeamName,
-}) => {
+export const PredictionTable = ({ predictions }) => {
   return (
     <Table
       data={predictions}
@@ -13,20 +11,16 @@ export const PredictionTable = ({
           title: 'Player',
           field: 'player_id',
           Cell({ entry: { player_id } }) {
-            return (
-              <span className='tracking-wider'>{getPlayerName(player_id)}</span>
-            );
+            const playerName = useGetPlayerName(player_id);
+            return <span className='tracking-wider'>{playerName}</span>;
           },
         },
         {
           title: 'Team',
           field: 'player_id',
           Cell({ entry: { player_id } }) {
-            return (
-              <span className='tracking-wider'>
-                {getPlayerTeamName(player_id)}
-              </span>
-            );
+            const playerTeamName = useGetPlayerTeamName(player_id);
+            return <span className='tracking-wider'>{playerTeamName}</span>;
           },
         },
         { title: 'Points used', field: 'points_used' },

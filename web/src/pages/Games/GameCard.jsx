@@ -2,12 +2,12 @@ import { Card } from '../../components/Card';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { PredictionForm } from './PredictionForm';
-import { useQuery } from 'react-query';
-import liigaService from '../../services/liiga';
-import { Spinner } from '../../components/Spinner';
+import { useGetTeamName } from '../../hooks/useGetTeamName';
 
-export const GameCard = ({ game, getTeamName }) => {
+export const GameCard = ({ game }) => {
   const [showPredictionForm, setShowPredictionForm] = useState(false);
+  const homeTeamName = useGetTeamName(game.homeTeam.teamId);
+  const awayTeamName = useGetTeamName(game.awayTeam.teamId);
 
   return (
     <li>
@@ -15,13 +15,13 @@ export const GameCard = ({ game, getTeamName }) => {
         <div className='w-full p-6'>
           <div className='w-full flex items-center justify-center space-x-3'>
             <h3 className='flex justify-end text-gray-900 text-sm font-medium w-1/3'>
-              {getTeamName(game.homeTeam.teamId)}
+              {homeTeamName}
             </h3>
             <span className='flex justify-center text-gray-900 text-sm font-medium w-1/3'>
               {format(new Date(game.start), 'HH:mm')}
             </span>
             <h3 className='flex justify-start text-gray-900 text-sm font-medium w-1/3'>
-              {getTeamName(game.awayTeam.teamId)}
+              {awayTeamName}
             </h3>
           </div>
         </div>
@@ -32,8 +32,8 @@ export const GameCard = ({ game, getTeamName }) => {
                 <PredictionForm
                   onSuccess={() => setShowPredictionForm(false)}
                   setShowPredictionForm={setShowPredictionForm}
-                  homeTeamName={getTeamName(game.homeTeam.teamId)}
-                  awayTeamName={getTeamName(game.awayTeam.teamId)}
+                  homeTeamName={homeTeamName}
+                  awayTeamName={awayTeamName}
                   gameId={game.id}
                   season={game.season}
                 />
