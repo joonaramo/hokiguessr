@@ -6,9 +6,10 @@ const axios = require('axios');
 const Goal = require('../models/Goal');
 const Prediction = require('../models/Prediction');
 const User = require('../models/User');
+const Cache = require('../utils/cache');
 
 const BASE_URL = 'https://liiga.fi/api/v1';
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 const mockData = require('./mockData');
 
 /**
@@ -16,12 +17,26 @@ const mockData = require('./mockData');
  * @returns {array} All players from Liiga
  */
 const getPlayers = async (teamId) => {
-  const { data } = await axios.get(
+  // Try getting data from cachee
+  const cacheKey = teamId ? `players-${teamId}` : 'players';
+  const players = await Cache.get(cacheKey);
+
+  // If cache contains data, return it
+  if (players) return players;
+
+  // No data is cached, make a request
+  let { data } = await axios.get(
     `${BASE_URL}/players/info?season=2021&tournament=runkosarja`
   );
-  return teamId
-    ? data.filter((player) => player.teamId.includes(teamId))
-    : data;
+
+  // If teamId is given, filter players by team
+  if (teamId) {
+    data = data.filter((player) => player.teamId.includes(teamId));
+  }
+
+  // Set data to cache and return it
+  await Cache.set(cacheKey, data, 60 * 60 * 24); // expires in one day
+  return data;
 };
 
 /**
@@ -29,8 +44,27 @@ const getPlayers = async (teamId) => {
  * @returns {array} All teams from Liiga
  */
 const getTeams = async () => {
+  // Try getting data from cache
+  const cacheKey = 'teams';
+  const teams = await Cache.get(cacheKey);
+
+  // If cache contains data, return it
+  if (teams) return teams;
+
+  // No data is cached, make a request
   const { data } = await axios.get(`${BASE_URL}/teams/info`);
-  return data.teams;
+
+  let teamsData = Object.values(data.teams);
+
+  teamsData = teamsData.map((team) => ({
+    id: team.id,
+    name: team.name,
+    slug: team.slug,
+  }));
+
+  // Set data to cache and return it
+  await Cache.set(cacheKey, teamsData, 60 * 60 * 24 * 7); // expires in one week
+  return teamsData;
 };
 
 /**
@@ -39,6 +73,7 @@ const getTeams = async () => {
  */
 const getLiveGames = async () => {
   if (USE_MOCK_DATA) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return mockData.liveGames.games;
   }
   const { data } = await axios.get(
@@ -53,6 +88,7 @@ const getLiveGames = async () => {
  */
 const getGames = async () => {
   if (USE_MOCK_DATA) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return mockData.upcomingGames;
   }
   const { data } = await axios.get(
@@ -69,6 +105,7 @@ const getGames = async () => {
  */
 const getGame = async (season = 2022, gameId) => {
   if (USE_MOCK_DATA) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return mockData.singleGame;
   }
   const { data } = await axios.get(`${BASE_URL}/games/${season}/${gameId}`);

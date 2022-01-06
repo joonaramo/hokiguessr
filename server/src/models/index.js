@@ -1,19 +1,44 @@
 const mysql = require('mysql');
 const connection = require('../utils/connectDB');
 
+function countRows(tableName, conditions = true) {
+  return new Promise((resolve, reject) => {
+    let sql = mysql.format(
+      `SELECT COUNT(*) as total FROM ${tableName} WHERE ${conditions}`
+    );
+    connection.query(sql, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results[0].total);
+      }
+    });
+  });
+}
+
 class DBModel {
-  static find(condition = true) {
+  static find(condition = true, limit = 20, offset = 0) {
     return new Promise((resolve, reject) => {
-      let sql = mysql.format(
-        `SELECT * FROM ${this.tableName} WHERE ?`,
-        condition
+      // Parse find conditions to MySQL-friendly format
+      let conditions = Object.entries(condition);
+      conditions = conditions.map((c) =>
+        c.map((v) => (typeof v === 'string' ? `\`${v}\`` : v))
       );
-      sql = sql.replace(',', ' AND');
-      connection.query(sql, (err, results) => {
+      conditions = conditions.map((c) => c.join(' = '));
+      conditions = conditions.join(' AND ');
+
+      let sql = mysql.format(
+        `SELECT * FROM ${this.tableName} WHERE ${conditions} LIMIT ? OFFSET ?`,
+        [limit, offset]
+      );
+
+      connection.query(sql, async (err, results) => {
         if (err) {
           reject(err);
         } else {
-          resolve(results.map((result) => new this(result)));
+          const total = await countRows(this.tableName, conditions);
+          const modelResults = results.map((result) => new this(result));
+          resolve([total, modelResults]);
         }
       });
     });
@@ -42,7 +67,8 @@ class DBModel {
         `SELECT * FROM ${this.tableName} WHERE ?`,
         condition
       );
-      sql = sql.replace(',', ' AND');
+      // If given multiple conditions, seperate with AND instead of commas
+      sql = sql.replace(/,/g, ' AND');
       connection.query(sql, (err, results) => {
         if (err) {
           reject(err);
