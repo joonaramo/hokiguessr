@@ -1,7 +1,7 @@
 import { axios } from '../lib/axios';
 
-const getPredictions = async () => {
-  return await axios.get('/predictions');
+const getPredictions = async (page) => {
+  return await axios.get('/predictions', { params: { page } });
 };
 
 const createPrediction = async (data) => {
