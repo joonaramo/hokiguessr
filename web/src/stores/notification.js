@@ -3,17 +3,19 @@ import create from 'zustand';
 
 export const useNotificationStore = create((set) => ({
   notifications: [],
-  addNotification: (notification) => {
+  addNotification: (notification, timeout = 5000) => {
     const id = nanoid();
-    setTimeout(
-      () =>
-        set((state) => ({
-          notifications: state.notifications.filter(
-            (notification) => notification.id !== id
-          ),
-        })),
-      5000
-    );
+    if (timeout !== 0) {
+      setTimeout(
+        () =>
+          set((state) => ({
+            notifications: state.notifications.filter(
+              (notification) => notification.id !== id
+            ),
+          })),
+        timeout
+      );
+    }
     set((state) => ({
       notifications: [...state.notifications, { id, ...notification }],
     }));

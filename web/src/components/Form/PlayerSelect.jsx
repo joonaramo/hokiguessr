@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
-import { FieldWrapper } from '../../components/Form/FieldWrapper';
+import { FieldWrapper } from './FieldWrapper';
 
 const groupStyles = {
   display: 'flex',

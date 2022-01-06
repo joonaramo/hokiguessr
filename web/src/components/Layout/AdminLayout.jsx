@@ -3,34 +3,32 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
-  HomeIcon,
   MenuAlt2Icon,
-  TableIcon,
   XIcon,
   UserCircleIcon,
-  ViewGridIcon,
+  UserGroupIcon,
+  LogoutIcon,
+  LibraryIcon,
 } from '@heroicons/react/outline';
 import { classNames } from '../../utils/classnames';
-import { LiveGames } from '../LiveGames';
 import logo from './logo.svg';
 import storage from '../../utils/storage';
 import { useQueryClient } from 'react-query';
 
 const sidebarNavigation = [
-  { name: 'Home', to: '.', icon: HomeIcon },
-  { name: 'Games', to: 'games', icon: ViewGridIcon },
-  { name: 'Predictions', to: 'predictions', icon: TableIcon },
-  { name: 'Admin', to: 'admin', adminRoute: true, icon: TableIcon },
+  { name: 'Admin', to: '.', end: true, icon: LibraryIcon },
+  { name: 'Players', to: 'players', icon: UserGroupIcon },
+  { name: 'Back to site', to: '../app', end: true, icon: LogoutIcon },
 ];
 const userNavigation = [{ name: 'Your Profile', href: '#' }];
 
 const SideNavigation = ({ setMobileMenuOpen, user }) => {
   return (
     <>
-      {sidebarNavigation.map((item, idx) =>
+      {sidebarNavigation.map((item) =>
         item.adminRoute && !user.is_admin ? null : (
           <NavLink
-            end={idx === 0}
+            end={item.end}
             key={item.name}
             to={item.to}
             onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
@@ -120,7 +118,7 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
   );
 };
 
-export const Layout = ({ children }) => {
+export const AdminLayout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { refetchUser, user } = useAuth();
   const navigate = useNavigate();
@@ -233,11 +231,6 @@ export const Layout = ({ children }) => {
             <main className='flex-1 overflow-y-auto bg-gray-800'>
               {children}
             </main>
-
-            {/* Secondary column (hidden on smaller screens) */}
-            <aside className='hidden w-96 bg-gray-900 border-l border-gray-500 overflow-y-auto lg:block'>
-              <LiveGames />
-            </aside>
           </div>
         </div>
       </div>
