@@ -15,6 +15,7 @@ class Prediction extends DBModel {
       completed = 0,
       completed_at,
       correct = 0,
+      notification_seen = 0,
     } = prediction;
     this.id = id;
     this.points_used = points_used;
@@ -26,6 +27,7 @@ class Prediction extends DBModel {
     this.completed_at = completed_at;
     this.completed = completed;
     this.correct = correct;
+    this.notification_seen = notification_seen;
     this.tableName = 'prediction';
   }
 }

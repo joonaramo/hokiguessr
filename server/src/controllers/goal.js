@@ -1,7 +1,7 @@
 const Goal = require('../models/Goal');
 
 const getAll = async (req, res) => {
-  const goals = await Goal.find();
+  const [, goals] = await Goal.find({});
   res.json(goals);
 };
 

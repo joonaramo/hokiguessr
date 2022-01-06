@@ -17,23 +17,35 @@ function countRows(tableName, conditions = true) {
 }
 
 class DBModel {
-  static find(condition = true, limit = 20, offset = 0) {
+  static find(condition, limit, offset = 0) {
     return new Promise((resolve, reject) => {
       // Parse find conditions to MySQL-friendly format
-      let conditions = Object.entries(condition);
-      conditions = conditions.map((c) =>
-        c.map((v) => (typeof v === 'string' ? `\`${v}\`` : v))
-      );
-      conditions = conditions.map((c) => c.join(' = '));
-      conditions = conditions.join(' AND ');
+      let conditions = true;
+      if (Object.keys(condition).length > 0) {
+        conditions = Object.entries(condition);
+        conditions = conditions.map((c) =>
+          c.map((v) => (typeof v === 'string' ? `\`${v}\`` : v))
+        );
+        conditions = conditions.map((c) => c.join(' = '));
+        conditions = conditions.join(' AND ');
+      }
+
+      // Limit and offset clause, if limit is not given, set to empty
+      let limitOffset = '';
+
+      if (limit) {
+        limitOffset = `LIMIT ${limit} OFFSET ${offset}`;
+      }
 
       let sql = mysql.format(
-        `SELECT * FROM ${this.tableName} WHERE ${conditions} LIMIT ? OFFSET ?`,
-        [limit, offset]
+        `SELECT * FROM ${this.tableName} WHERE ${conditions} ORDER BY id DESC ${limitOffset}`
       );
+
+      // console.log(sql);
 
       connection.query(sql, async (err, results) => {
         if (err) {
+          console.log(err);
           reject(err);
         } else {
           const total = await countRows(this.tableName, conditions);
@@ -80,6 +92,22 @@ class DBModel {
           }
         }
       });
+    });
+  }
+  static findByIdAndUpdate(id, data) {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `UPDATE ${this.tableName} SET ? WHERE id = ?`,
+        [data, id],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            // Get updated row
+            this.findById(id).then((res) => resolve(res));
+          }
+        }
+      );
     });
   }
   static deleteById(id) {

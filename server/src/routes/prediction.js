@@ -21,5 +21,6 @@ router.post(
   validator.body(predictionSchema),
   predictionController.create
 );
+router.patch('/:id', checkAuth, predictionController.update);
 
 module.exports = router;

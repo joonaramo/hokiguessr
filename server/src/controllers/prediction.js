@@ -5,14 +5,34 @@ const liigaService = require('../services/liiga');
 const FieldError = require('../utils/errors');
 
 const getAll = async (req, res) => {
-  const { page = 1 } = req.query;
+  const { page = 1, active } = req.query;
   const limit = 10;
   const offset = (page - 1) * limit;
   const [total, predictions] = await Prediction.find(
     { user_id: req.user.id },
     limit,
-    offset
+    offset,
+    active
   );
+  let stats;
+
+  // Get correct predictions only on the first page so we don't make additional
+  // SQL queries each time user changes a page
+  if (parseInt(page) === 1) {
+    const [totalCorrect, correctPredictions] = await Prediction.find({
+      user_id: req.user.id,
+      correct: true,
+    });
+    const pointsWonReducer = (previousValue, currentValue) =>
+      previousValue +
+      currentValue.points_used * currentValue.points_ratio -
+      currentValue.points_used;
+    stats = {
+      correct: totalCorrect,
+      pointsWon: correctPredictions.reduce(pointsWonReducer, 0),
+    };
+  }
+
   res.json({
     paging: {
       total,
@@ -23,6 +43,7 @@ const getAll = async (req, res) => {
       pages: Math.ceil(total / limit),
     },
     predictions,
+    stats,
   });
 };
 
@@ -93,9 +114,16 @@ const create = async (req, res) => {
   res.json(prediction);
 };
 
+const update = async (req, res) => {
+  const { id } = req.params;
+  const prediction = await Prediction.findByIdAndUpdate(id, req.body);
+  res.json(prediction);
+};
+
 const predictionController = {
   getAll,
   create,
+  update,
 };
 
 module.exports = predictionController;

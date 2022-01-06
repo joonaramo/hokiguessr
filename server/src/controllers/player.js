@@ -2,8 +2,22 @@ const Player = require('../models/Player');
 const FieldError = require('../utils/errors');
 
 const getAll = async (req, res) => {
-  const players = await Player.find();
-  res.json(players);
+  const { page = 1 } = req.query;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const [total, players] = await Player.find({}, limit, offset);
+  res.json({
+    paging: {
+      total,
+      limit,
+      offset: offset + 1,
+      hasMore: offset + limit < total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    },
+    players,
+  });
 };
 
 const create = async (req, res) => {

@@ -9,7 +9,7 @@ const User = require('../models/User');
 const Cache = require('../utils/cache');
 
 const BASE_URL = 'https://liiga.fi/api/v1';
-const USE_MOCK_DATA = false;
+const USE_MOCK_DATA = true;
 const mockData = require('./mockData');
 
 /**
@@ -146,7 +146,7 @@ const handleGoalEvent = async (goalEvent) => {
       date: new Date(goalEvent.logTime),
     });
     await newGoal.save();
-    const predictions = await Prediction.find({
+    const [, predictions] = await Prediction.find({
       player_id: goalEvent.scorerPlayerId,
     });
     predictions.forEach(async (prediction) => {
@@ -182,7 +182,7 @@ const poll = async () => {
       });
       // If game state is ended, make all incomplete predictions for that game completed
       if (g.ended) {
-        const predictions = await Prediction.find({
+        const [total, predictions] = await Prediction.find({
           game_id: g.id,
           completed: 0,
         });

@@ -44,6 +44,7 @@ const checkAdmin = (req, res, next) => {
  *  ]
  */
 const errorHandler = (err, req, res, next) => {
+  console.log(err.code);
   if (err && err.error && err.error.isJoi) {
     // we had a joi error, let's return a custom 400 json response
     const errorResponse = err.error.details.map((e) => ({
@@ -52,8 +53,17 @@ const errorHandler = (err, req, res, next) => {
       field: e.context.label,
     }));
     return res.status(400).json(errorResponse);
-  } else {
-    console.log(JSON.stringify(err));
+  } else if (err.code) {
+    // SQL Error
+    return res.status(400).json([
+      {
+        message: 'Bad Request',
+        type: 'BAD_REQUEST_ERROR',
+      },
+    ]);
+  }
+  {
+    // Other error
     return res.status(400).json([
       {
         message: err.message,
