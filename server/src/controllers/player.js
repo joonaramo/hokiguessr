@@ -20,6 +20,21 @@ const getAll = async (req, res) => {
   });
 };
 
+const getById = async (req, res) => {
+  const { id } = req.params;
+  const player = await Player.findById(id);
+  res.json(player);
+};
+
+const update = async (req, res) => {
+  const { id } = req.params;
+  const { pointsRatio } = req.body;
+  const player = await Player.findByIdAndUpdate(id, {
+    points_ratio: pointsRatio,
+  });
+  res.json(player);
+};
+
 const create = async (req, res) => {
   const { playerId, pointsRatio } = req.body;
   const foundPlayer = await Player.findOne({ player_id: playerId });
@@ -39,9 +54,18 @@ const create = async (req, res) => {
   res.json(player);
 };
 
+const remove = async (req, res) => {
+  const { id } = req.params;
+  await Player.deleteById(id);
+  res.status(204).end();
+};
+
 const playerController = {
   getAll,
+  getById,
+  update,
   create,
+  remove,
 };
 
 module.exports = playerController;

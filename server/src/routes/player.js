@@ -14,11 +14,14 @@ const playerSchema = Joi.object({
 });
 
 router.get('/', playerController.getAll);
+router.get('/:id', playerController.getById);
 router.post(
   '/',
   checkAdmin,
   validator.body(playerSchema),
   playerController.create
 );
+router.patch('/:id', checkAdmin, playerController.update);
+router.delete('/:id', checkAdmin, playerController.remove);
 
 module.exports = router;
