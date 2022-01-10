@@ -116,7 +116,10 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const prediction = await Prediction.findByIdAndUpdate(id, req.body);
+  const { notification_seen } = req.body;
+  const prediction = await Prediction.findByIdAndUpdate(id, {
+    notification_seen,
+  });
   res.json(prediction);
 };
 
