@@ -9,7 +9,7 @@ const User = require('../models/User');
 const Cache = require('../utils/cache');
 
 const BASE_URL = 'https://liiga.fi/api/v1';
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 const mockData = require('./mockData');
 
 /**
