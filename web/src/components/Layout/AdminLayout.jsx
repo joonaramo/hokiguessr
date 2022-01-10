@@ -10,6 +10,7 @@ import {
   LogoutIcon,
   LibraryIcon,
 } from '@heroicons/react/outline';
+import { SkatesIcon } from './SkatesIcon';
 import { classNames } from '../../utils/classnames';
 import logo from './logo.svg';
 import storage from '../../utils/storage';
@@ -17,7 +18,8 @@ import { useQueryClient } from 'react-query';
 
 const sidebarNavigation = [
   { name: 'Admin', to: '.', end: true, icon: LibraryIcon },
-  { name: 'Players', to: 'players', icon: UserGroupIcon },
+  { name: 'Users', to: 'users', icon: UserGroupIcon },
+  { name: 'Players', to: 'players', icon: SkatesIcon },
   { name: 'Back to site', to: '../app', end: true, icon: LogoutIcon },
 ];
 const userNavigation = [{ name: 'Your Profile', href: '#' }];
@@ -41,7 +43,7 @@ const SideNavigation = ({ setMobileMenuOpen, user }) => {
               )
             }
           >
-            <item.icon className='h-6 w-6 mr-3 md:mr-0' aria-hidden='true' />
+            <item.icon className='h-6 mr-3 md:mr-0' aria-hidden='true' />
             <span className='mt-0 md:mt-2 text-gray-200'>{item.name}</span>
           </NavLink>
         )

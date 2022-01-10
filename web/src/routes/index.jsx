@@ -10,6 +10,7 @@ import { Predictions } from '../pages/Predictions';
 import { Admin, AdminDashboard } from '../pages/Admin';
 import { AdminLayout } from '../components/Layout/AdminLayout';
 import { Players } from '../pages/Admin/Players';
+import { Users } from '../pages/Admin/Users';
 
 const App = () => {
   return (
@@ -71,6 +72,10 @@ export const AppRoutes = () => {
         {
           path: 'players',
           element: <Players />,
+        },
+        {
+          path: 'users',
+          element: <Users />,
         },
       ],
     },
