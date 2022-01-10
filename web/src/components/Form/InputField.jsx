@@ -6,6 +6,8 @@ export const InputField = ({
   className,
   registration,
   onChange,
+  disabled,
+  defaultValue,
   error,
   step,
 }) => {
@@ -13,7 +15,9 @@ export const InputField = ({
     <FieldWrapper label={label} error={error}>
       <input
         type={type}
+        defaultValue={defaultValue}
         step={step}
+        disabled={disabled}
         onChange={onChange}
         className={classNames(
           error
