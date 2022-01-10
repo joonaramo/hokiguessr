@@ -2,7 +2,7 @@ import { Table } from '../../../components/Table';
 import { useGetPlayerName } from '../../../hooks/useGetPlayerName';
 import { useGetPlayerTeamName } from '../../../hooks/useGetPlayerTeamName';
 
-export const PlayerTable = ({ players }) => {
+export const PlayerTable = ({ players, onEdit, onDelete }) => {
   return (
     <Table
       rounded={false}
@@ -27,13 +27,20 @@ export const PlayerTable = ({ players }) => {
         { title: 'Points ratio', field: 'points_ratio' },
         {
           title: 'Actions',
-          Cell() {
+          Cell({ entry: { id, player_id } }) {
+            const playerName = useGetPlayerName(player_id);
             return (
               <div className='flex'>
-                <button className='text-indigo-600 hover:text-indigo-900'>
+                <button
+                  onClick={() => onEdit(id, playerName)}
+                  className='text-indigo-600 hover:text-indigo-900'
+                >
                   Edit
                 </button>
-                <button className='ml-4 text-rose-600 hover:text-rose-900'>
+                <button
+                  onClick={() => onDelete(id)}
+                  className='ml-4 text-rose-600 hover:text-rose-900'
+                >
                   Delete
                 </button>
               </div>

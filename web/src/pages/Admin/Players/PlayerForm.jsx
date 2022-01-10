@@ -1,17 +1,10 @@
 import { Form, InputField } from '../../../components/Form';
-import { useCreateCustomPlayer } from '../../../hooks/useCreateCustomPlayer';
 import * as yup from 'yup';
-import { useState } from 'react';
 import { PlayerSelect } from '../../../components/Form/PlayerSelect';
-import { Button } from '../../../components/Button';
 import { usePlayers } from '../../../hooks/usePlayers';
 
 const schema = yup
   .object({
-    playerId: yup
-      .number()
-      .typeError('Player is required')
-      .required('Player is required'),
     pointsRatio: yup
       .number()
       .positive('Points must be greater than zero')
@@ -20,10 +13,14 @@ const schema = yup
   })
   .required();
 
-export const PlayerForm = ({ onSuccess, setOpen }) => {
-  const createPlayer = useCreateCustomPlayer();
+export const PlayerForm = ({
+  onSubmit,
+  setOpen,
+  defaultValues,
+  errors,
+  setErrors,
+}) => {
   const playersQuery = usePlayers();
-  const [errors, setErrors] = useState([]);
 
   const playerOptions = playersQuery.data.map((player) => {
     return {
@@ -34,29 +31,27 @@ export const PlayerForm = ({ onSuccess, setOpen }) => {
   const options = [{ label: 'Players', options: playerOptions }];
 
   return (
-    <Form
-      className='w-full'
-      onSubmit={async (values) => {
-        const { playerId, pointsRatio } = values;
-        try {
-          await createPlayer.mutateAsync({ playerId, pointsRatio });
-          setOpen(false);
-          onSuccess();
-        } catch (err) {
-          setErrors(err.response?.data);
-        }
-      }}
-      schema={schema}
-    >
+    <Form className='w-full' onSubmit={onSubmit} schema={schema}>
       {({ register, formState, control }) => (
         <>
-          <PlayerSelect
-            options={options}
-            control={control}
-            error={formState.errors['playerId']}
-            setErrors={setErrors}
-          />
+          {defaultValues?.playerName ? (
+            <InputField
+              defaultValue={defaultValues?.playerName}
+              type='text'
+              label='Player'
+              disabled={true}
+            />
+          ) : (
+            <PlayerSelect
+              defaultValue={defaultValues?.playerName}
+              options={options}
+              control={control}
+              error={formState.errors['playerId']}
+              setErrors={setErrors}
+            />
+          )}
           <InputField
+            defaultValue={defaultValues?.pointsRatio}
             type='number'
             label='Points ratio'
             step='0.01'
