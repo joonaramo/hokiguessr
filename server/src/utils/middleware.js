@@ -43,8 +43,7 @@ const checkAdmin = (req, res, next) => {
  *    }
  *  ]
  */
-const errorHandler = (err, req, res, next) => {
-  console.log(err.code);
+const errorHandler = (err, req, res, _next) => {
   if (err && err.error && err.error.isJoi) {
     // we had a joi error, let's return a custom 400 json response
     const errorResponse = err.error.details.map((e) => ({
@@ -61,8 +60,7 @@ const errorHandler = (err, req, res, next) => {
         type: 'BAD_REQUEST_ERROR',
       },
     ]);
-  }
-  {
+  } else {
     // Other error
     return res.status(400).json([
       {
