@@ -41,8 +41,6 @@ class DBModel {
         `SELECT * FROM ${this.tableName} WHERE ${conditions} ORDER BY id DESC ${limitOffset}`
       );
 
-      // console.log(sql);
-
       connection.query(sql, async (err, results) => {
         if (err) {
           console.log(err);
