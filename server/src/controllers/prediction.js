@@ -4,6 +4,11 @@ const User = require('../models/User');
 const liigaService = require('../services/liiga');
 const FieldError = require('../utils/errors');
 
+/**
+ * A function used to get all predictions from currently logged in user
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ */
 const getAllFromUser = async (req, res) => {
   const { page = 1, active } = req.query;
   const limit = 10;
@@ -47,6 +52,11 @@ const getAllFromUser = async (req, res) => {
   });
 };
 
+/**
+ * A function used to get all predictions
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ */
 const getAll = async (req, res) => {
   const { page = 1, active } = req.query;
   const limit = 10;
@@ -66,6 +76,11 @@ const getAll = async (req, res) => {
   });
 };
 
+/**
+ * A function used to create a new prediction
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ */
 const create = async (req, res) => {
   const { pointsUsed, playerId, gameId } = req.body;
 

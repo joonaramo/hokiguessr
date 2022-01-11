@@ -1,5 +1,9 @@
 const mysql = require('mysql');
 
+/**
+ * Create MySQL connection pool
+ * Also add typecasting so tinyints will be converted to booleans in our API.
+ */
 const connectionPool = mysql.createPool({
   connectionLimit: 10,
   host: process.env.DB_HOST,

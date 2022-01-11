@@ -1,6 +1,12 @@
 const mysql = require('mysql');
 const connection = require('../utils/connectDB');
 
+/**
+ *
+ * @param {string} tableName name of the mysql table
+ * @param {object} conditions conditions used on where clause
+ * @returns promise which resolves total number of rows where the conditions match
+ */
 function countRows(tableName, conditions = true) {
   return new Promise((resolve, reject) => {
     let sql = mysql.format(
@@ -16,7 +22,17 @@ function countRows(tableName, conditions = true) {
   });
 }
 
+/**
+ * Main DB Model class that contains all the functions for CRUD operations
+ */
 class DBModel {
+  /**
+   * Get array of results which meets given conditions
+   * @param {object} condition conditions used on where clause
+   * @param {*} limit maximum number of results
+   * @param {*} offset offset of results
+   * @returns promise which resolves the results and total count of rows in table
+   */
   static find(condition, limit, offset = 0) {
     return new Promise((resolve, reject) => {
       // Parse find conditions to MySQL-friendly format
@@ -53,6 +69,11 @@ class DBModel {
       });
     });
   }
+  /**
+   * Get single row by id
+   * @param {number} id the id to find
+   * @returns promise which resolves to single found object
+   */
   static findById(id) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -71,6 +92,11 @@ class DBModel {
       );
     });
   }
+  /**
+   * Get single row by any condition
+   * @param {*} condition conditions used on where clause
+   * @returns promise which resolves to single found object
+   */
   static findOne(condition = true) {
     return new Promise((resolve, reject) => {
       let sql = mysql.format(
@@ -92,6 +118,12 @@ class DBModel {
       });
     });
   }
+  /**
+   * Find row by id and update its' data
+   * @param {number} id the id to find
+   * @param {object} data the data used to update the row
+   * @returns promise which resolves to the updated row
+   */
   static findByIdAndUpdate(id, data) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -108,6 +140,11 @@ class DBModel {
       );
     });
   }
+  /**
+   * Delete row by its id
+   * @param {number} id the id to delete
+   * @returns promise which resolves no value if successfully deleted
+   */
   static deleteById(id) {
     return new Promise((resolve, reject) => {
       connection.query(
@@ -125,6 +162,10 @@ class DBModel {
       );
     });
   }
+  /**
+   * Save a instance of a Model by inserting, or updating if it already exists
+   * @returns promise which resolves to inserted or updated row
+   */
   save() {
     const data = { ...this };
     delete data.tableName;
@@ -145,6 +186,11 @@ class DBModel {
       );
     });
   }
+  /**
+   * Function used to delete a property from db model object
+   * @param {string} selector
+   * @returns db model object with the property deleted
+   */
   select(selector) {
     const data = { ...this };
     if (selector.includes('-')) {

@@ -1,5 +1,11 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * Get JWT token from authorization header, verify it and set req.user object
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @param {NextFunction} next Express next function
+ */
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization');
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
@@ -14,6 +20,13 @@ const tokenExtractor = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to check if user is logged in
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @param {NextFunction} next Express next function
+ * @returns unauthorized error or next()
+ */
 const checkAuth = (req, res, next) => {
   if (!req.user) {
     return res
@@ -23,6 +36,13 @@ const checkAuth = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to check if user is admin
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @param {NextFunction} next Express next function
+ * @returns unauthorized error or next()
+ */
 const checkAdmin = (req, res, next) => {
   if (!req.user || !req.user.is_admin) {
     return res
@@ -33,7 +53,8 @@ const checkAdmin = (req, res, next) => {
 };
 
 /**
- * Error format:
+ * Error middleware for handling API and DB errors
+ * Format:
  *
  *  [
  *    {
