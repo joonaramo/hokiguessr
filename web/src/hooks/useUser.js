@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
-import userService from '../services/user';
+import adminService from '../services/admin';
 
 export const useUser = (id) => {
-  return useQuery(['user', id], () => userService.getUser(id));
+  return useQuery(['user', id], () => adminService.getUser(id));
 };

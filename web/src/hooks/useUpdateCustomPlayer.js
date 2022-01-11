@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
-import playerService from '../services/player';
+import adminService from '../services/admin';
 import { useNotificationStore } from '../stores/notification';
 
 export const useUpdateCustomPlayer = (id) => {
   const queryClient = useQueryClient();
   const { addNotification } = useNotificationStore();
-  return useMutation((data) => playerService.updatePlayer(id, data), {
+  return useMutation((data) => adminService.updatePlayer(id, data), {
     onSuccess: () => {
       queryClient.invalidateQueries('customPlayers');
       addNotification({

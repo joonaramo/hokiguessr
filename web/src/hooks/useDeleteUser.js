@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query';
-import userService from '../services/user';
+import adminService from '../services/admin';
 import { useNotificationStore } from '../stores/notification';
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
   const { addNotification } = useNotificationStore();
-  return useMutation((id) => userService.deleteUser(id), {
+  return useMutation((id) => adminService.deleteUser(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('users');
       addNotification({
