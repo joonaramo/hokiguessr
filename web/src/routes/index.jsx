@@ -7,10 +7,11 @@ import { Dashboard } from '../pages/Dashboard';
 import { Games } from '../pages/Games';
 import { Signup } from '../pages/Auth/Signup';
 import { Predictions } from '../pages/Predictions';
-import { Admin, AdminDashboard } from '../pages/Admin';
+import { AdminDashboard } from '../pages/Admin';
 import { AdminLayout } from '../components/Layout/AdminLayout';
 import { Players } from '../pages/Admin/Players';
 import { Users } from '../pages/Admin/Users';
+import { Predictions as AdminPredictions } from '../pages/Admin/Predictions';
 
 const App = () => {
   return (
@@ -76,6 +77,10 @@ export const AppRoutes = () => {
         {
           path: 'users',
           element: <Users />,
+        },
+        {
+          path: 'predictions',
+          element: <AdminPredictions />,
         },
       ],
     },
