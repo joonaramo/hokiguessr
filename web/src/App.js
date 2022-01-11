@@ -1,7 +1,6 @@
 import { AppRoutes } from './routes';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from './lib/auth';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { Notifications } from './components/Notifications';
 
 const queryClient = new QueryClient({
@@ -19,7 +18,6 @@ const App = () => {
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };
