@@ -8,6 +8,7 @@ import {
   UserGroupIcon,
   LogoutIcon,
   LibraryIcon,
+  TableIcon,
 } from '@heroicons/react/outline';
 import { SkatesIcon } from './SkatesIcon';
 import { classNames } from '../../utils/classnames';
@@ -21,6 +22,7 @@ const sidebarNavigation = [
   { name: 'Admin', to: '.', end: true, icon: LibraryIcon },
   { name: 'Users', to: 'users', icon: UserGroupIcon },
   { name: 'Players', to: 'players', icon: SkatesIcon },
+  { name: 'Predictions', to: 'predictions', icon: TableIcon },
   { name: 'Back to site', to: '../app', end: true, icon: LogoutIcon },
 ];
 

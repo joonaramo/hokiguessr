@@ -48,7 +48,6 @@ export const PlayerSelect = ({
   return (
     <Controller
       control={control}
-      defaultValue={options[0].options[0]}
       name='playerId'
       render={({ field: { onChange, value, ref } }) => (
         <FieldWrapper label='Player' error={error}>
@@ -57,11 +56,14 @@ export const PlayerSelect = ({
             formatOptionLabel={formatOptionLabel}
             formatGroupLabel={formatGroupLabel}
             options={options}
-            value={options.map((o) =>
-              o.options.find((c) => {
-                return value.toString().includes(c.value.toString());
-              })
-            )}
+            value={
+              value &&
+              options.map((o) =>
+                o.options.find((c) => {
+                  return value.toString().includes(c.value.toString());
+                })
+              )
+            }
             onChange={(val) => {
               onChange(val.value);
               if (handleChange) handleChange(val.pointsRatio);

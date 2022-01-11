@@ -95,6 +95,7 @@ export const PredictionForm = ({
     >
       {({ register, formState, control, watch }) => {
         const pointsUsed = watch('pointsUsed');
+        const playerId = watch('playerId');
         return (
           <>
             <PlayerSelect
@@ -116,11 +117,13 @@ export const PredictionForm = ({
                 onChange: () => setErrors([]),
               })}
             />
-            <p>
-              If you win, {(pointsRatio * pointsUsed).toFixed(0)} pucks will be
-              credited to your balance. Profit:{' '}
-              {(pointsRatio * pointsUsed - pointsUsed).toFixed(0)} pucks
-            </p>
+            {pointsUsed && playerId && (
+              <p>
+                If you win, {(pointsRatio * pointsUsed).toFixed(0)} pucks will
+                be credited to your balance. Profit:{' '}
+                {(pointsRatio * pointsUsed - pointsUsed).toFixed(0)} pucks
+              </p>
+            )}
             <div>
               <Button
                 type='submit'
