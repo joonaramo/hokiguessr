@@ -4,7 +4,7 @@ const User = require('../models/User');
 const liigaService = require('../services/liiga');
 const FieldError = require('../utils/errors');
 
-const getAll = async (req, res) => {
+const getAllFromUser = async (req, res) => {
   const { page = 1, active } = req.query;
   const limit = 10;
   const offset = (page - 1) * limit;
@@ -44,6 +44,25 @@ const getAll = async (req, res) => {
     },
     predictions,
     stats,
+  });
+};
+
+const getAll = async (req, res) => {
+  const { page = 1, active } = req.query;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+  const [total, predictions] = await Prediction.find({}, limit, offset, active);
+
+  res.json({
+    paging: {
+      total,
+      limit,
+      offset: offset + 1,
+      hasMore: offset + limit < total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+    },
+    predictions,
   });
 };
 
@@ -124,6 +143,7 @@ const update = async (req, res) => {
 };
 
 const predictionController = {
+  getAllFromUser,
   getAll,
   create,
   update,

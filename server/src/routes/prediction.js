@@ -14,7 +14,7 @@ const predictionSchema = Joi.object({
   gameId: Joi.number().integer().required(),
 });
 
-router.get('/', checkAuth, predictionController.getAll);
+router.get('/', checkAuth, predictionController.getAllFromUser);
 router.post(
   '/',
   checkAuth,
