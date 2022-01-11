@@ -5,7 +5,6 @@ import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   MenuAlt2Icon,
   XIcon,
-  UserCircleIcon,
   UserGroupIcon,
   LogoutIcon,
   LibraryIcon,
@@ -15,6 +14,8 @@ import { classNames } from '../../utils/classnames';
 import logo from './logo.svg';
 import storage from '../../utils/storage';
 import { useQueryClient } from 'react-query';
+import { PuckIcon } from './PuckIcon';
+import { Button } from '../Button';
 
 const sidebarNavigation = [
   { name: 'Admin', to: '.', end: true, icon: LibraryIcon },
@@ -22,7 +23,6 @@ const sidebarNavigation = [
   { name: 'Players', to: 'players', icon: SkatesIcon },
   { name: 'Back to site', to: '../app', end: true, icon: LogoutIcon },
 ];
-const userNavigation = [{ name: 'Your Profile', href: '#' }];
 
 const SideNavigation = ({ setMobileMenuOpen, user }) => {
   return (
@@ -171,58 +171,25 @@ export const AdminLayout = ({ children }) => {
                   <h1 className='text-2xl text-white'>HokiGuessr</h1>
                 </div>
                 <div className='ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6'>
-                  {/* Profile dropdown */}
-                  <Menu as='div' className='relative flex-shrink-0'>
-                    <div>
-                      <Menu.Button className='bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>
-                        <span className='sr-only'>Open user menu</span>
-                        <UserCircleIcon
-                          className='h-9 w-9'
-                          aria-hidden='true'
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter='transition ease-out duration-100'
-                      enterFrom='transform opacity-0 scale-95'
-                      enterTo='transform opacity-100 scale-100'
-                      leave='transition ease-in duration-75'
-                      leaveFrom='transform opacity-100 scale-100'
-                      leaveTo='transform opacity-0 scale-95'
+                  <p className='flex items-center text-gray-200 tracking-wider font-medium'>
+                    <span>
+                      <PuckIcon className='h-6 w-6 inline-block' />
+                    </span>
+                    <span className='ml-2 hidden sm:block'>PUCKS:</span>
+                    <span className='ml-2 sm:hidden'>x</span>
+                    <span className='ml-2'>{user.points.toFixed(0)}</span>
+                  </p>
+                  <div>
+                    <Button
+                      onClick={() => logout()}
+                      className='block w-full visited bg-white text-left px-4 py-2 text-sm text-gray-700'
                     >
-                      <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                {item.name}
-                              </a>
-                            )}
-                          </Menu.Item>
-                        ))}
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              onClick={() => logout()}
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block w-full text-left px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              Sign out
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
+                      <span className='hidden sm:block'>Sign out</span>
+                      <span className='sm:hidden'>
+                        <LogoutIcon className='w-6 h-6' />
+                      </span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

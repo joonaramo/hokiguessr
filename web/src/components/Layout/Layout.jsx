@@ -2,17 +2,20 @@ import { Fragment, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
 import { Dialog, Menu, Transition } from '@headlessui/react';
+import { Button } from '../Button';
 import {
   HomeIcon,
   MenuAlt2Icon,
   TableIcon,
   XIcon,
-  UserCircleIcon,
   ViewGridIcon,
+  LibraryIcon,
+  LogoutIcon,
 } from '@heroicons/react/outline';
 import { classNames } from '../../utils/classnames';
 import { LiveGames } from '../LiveGames';
 import logo from './logo.svg';
+import { PuckIcon } from './PuckIcon';
 import storage from '../../utils/storage';
 import { useQueryClient } from 'react-query';
 
@@ -20,15 +23,14 @@ const sidebarNavigation = [
   { name: 'Home', to: '.', icon: HomeIcon },
   { name: 'Games', to: 'games', icon: ViewGridIcon },
   { name: 'Predictions', to: 'predictions', icon: TableIcon },
-  { name: 'Admin', to: 'admin', adminRoute: true, icon: TableIcon },
+  { name: 'Admin', to: 'admin', adminRoute: true, icon: LibraryIcon },
 ];
-const userNavigation = [{ name: 'Your Profile', href: '#' }];
 
 const SideNavigation = ({ setMobileMenuOpen, user }) => {
   return (
     <>
       {sidebarNavigation.map((item, idx) =>
-        item.adminRoute && !user.is_admin ? null : (
+        item.adminRoute && !user?.is_admin ? null : (
           <NavLink
             end={idx === 0}
             key={item.name}
@@ -52,7 +54,7 @@ const SideNavigation = ({ setMobileMenuOpen, user }) => {
   );
 };
 
-const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
+const MobileMenu = ({ user, mobileMenuOpen, setMobileMenuOpen }) => {
   return (
     <Transition.Root show={mobileMenuOpen} as={Fragment}>
       <Dialog as='div' className='md:hidden' onClose={setMobileMenuOpen}>
@@ -99,13 +101,16 @@ const MobileMenu = ({ mobileMenuOpen, setMobileMenuOpen }) => {
                 </div>
               </Transition.Child>
               <div className='flex-shrink-0 px-4 flex items-center'>
-                <img className='h-8 w-auto mr-3' src={logo} alt='Workflow' />
+                <img className='h-8 w-auto mr-3' src={logo} alt='HokiGuessr' />
                 <h1 className='text-2xl text-white'>HokiGuessr</h1>
               </div>
               <div className='mt-5 flex-1 h-0 px-2 overflow-y-auto'>
                 <nav className='h-full flex flex-col'>
                   <div className='space-y-1'>
-                    <SideNavigation setMobileMenuOpen={setMobileMenuOpen} />
+                    <SideNavigation
+                      user={user}
+                      setMobileMenuOpen={setMobileMenuOpen}
+                    />
                   </div>
                 </nav>
               </div>
@@ -150,6 +155,7 @@ export const Layout = ({ children }) => {
 
         {/* Mobile menu */}
         <MobileMenu
+          user={user}
           mobileMenuOpen={mobileMenuOpen}
           setMobileMenuOpen={setMobileMenuOpen}
         />
@@ -171,58 +177,25 @@ export const Layout = ({ children }) => {
                   <h1 className='text-2xl text-white'>HokiGuessr</h1>
                 </div>
                 <div className='ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6'>
-                  {/* Profile dropdown */}
-                  <Menu as='div' className='relative flex-shrink-0'>
-                    <div>
-                      <Menu.Button className='bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>
-                        <span className='sr-only'>Open user menu</span>
-                        <UserCircleIcon
-                          className='h-9 w-9'
-                          aria-hidden='true'
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter='transition ease-out duration-100'
-                      enterFrom='transform opacity-0 scale-95'
-                      enterTo='transform opacity-100 scale-100'
-                      leave='transition ease-in duration-75'
-                      leaveFrom='transform opacity-100 scale-100'
-                      leaveTo='transform opacity-0 scale-95'
+                  <p className='flex items-center text-gray-200 tracking-wider font-medium'>
+                    <span>
+                      <PuckIcon className='h-6 w-6 inline-block' />
+                    </span>
+                    <span className='ml-2 hidden sm:block'>PUCKS:</span>
+                    <span className='ml-2 sm:hidden'>x</span>
+                    <span className='ml-2'>{user.points.toFixed(0)}</span>
+                  </p>
+                  <div>
+                    <Button
+                      onClick={() => logout()}
+                      className='block w-full visited bg-white text-left px-4 py-2 text-sm text-gray-700'
                     >
-                      <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
-                              >
-                                {item.name}
-                              </a>
-                            )}
-                          </Menu.Item>
-                        ))}
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              onClick={() => logout()}
-                              className={classNames(
-                                active ? 'bg-gray-100' : '',
-                                'block w-full text-left px-4 py-2 text-sm text-gray-700'
-                              )}
-                            >
-                              Sign out
-                            </button>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
+                      <span className='hidden sm:block'>Sign out</span>
+                      <span className='sm:hidden'>
+                        <LogoutIcon className='w-6 h-6' />
+                      </span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
