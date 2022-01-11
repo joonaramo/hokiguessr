@@ -1,5 +1,6 @@
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
+import { PuckIcon } from '../Layout/PuckIcon';
 import { FieldWrapper } from './FieldWrapper';
 
 const groupStyles = {
@@ -28,7 +29,22 @@ const formatGroupLabel = (data) => (
   </div>
 );
 
-export const PlayerSelect = ({ options, control, error }) => {
+const formatOptionLabel = (data) => (
+  <div className='flex justify-between'>
+    <span>{data.label}</span>
+    <span>
+      {data.pointsRatio} x{' '}
+      <PuckIcon className='inline-block text-gray-900 w-4 h-4' />
+    </span>
+  </div>
+);
+
+export const PlayerSelect = ({
+  options,
+  control,
+  error,
+  onChange: handleChange,
+}) => {
   return (
     <Controller
       control={control}
@@ -38,6 +54,7 @@ export const PlayerSelect = ({ options, control, error }) => {
         <FieldWrapper label='Player' error={error}>
           <Select
             inputRef={ref}
+            formatOptionLabel={formatOptionLabel}
             formatGroupLabel={formatGroupLabel}
             options={options}
             value={options.map((o) =>
@@ -45,7 +62,10 @@ export const PlayerSelect = ({ options, control, error }) => {
                 return value.toString().includes(c.value.toString());
               })
             )}
-            onChange={(val) => onChange(val.value)}
+            onChange={(val) => {
+              onChange(val.value);
+              if (handleChange) handleChange(val.pointsRatio);
+            }}
           />
         </FieldWrapper>
       )}

@@ -21,23 +21,18 @@ export const Dashboard = () => {
   return (
     <>
       <ContentLayout darkBg={true} title={`Hey, ${user.username}!`}>
-        <div className='mt-4 grid grid-cols-2 md:grid-cols-4 gap-4'>
-          <Card className='flex flex-col text-center justify-center p-6'>
-            <h2 className='text-xl'>{user.points}</h2>
-            <h3>Points</h3>
-          </Card>
-          <Card className='flex flex-col text-center justify-center p-6'>
-            <h2 className='text-xl'>{predictionsQuery.data.paging.total}</h2>
-            <h3>Total predictions</h3>
-          </Card>
-          <Card className='flex flex-col text-center justify-center p-6'>
-            <h2 className='text-xl'>{predictionsQuery.data.stats.correct}</h2>
-            <h3>Correct predictions</h3>
-          </Card>
-          <Card className='flex flex-col text-center justify-center p-6'>
-            <h2 className='text-xl'>{predictionsQuery.data.stats.pointsWon}</h2>
-            <h3>Points won</h3>
-          </Card>
+        <div className='mt-4'>
+          <p>
+            Welcome to HokiGuessr! Your mission is to predict which players
+            score goals in Finnish Elite League (Liiga). To make predictions,
+            you will use in-game currency called <b>pucks</b>. You can see your
+            balance on top right of the page.
+            <br />
+            Each player will have a puck ratio (by default 2) so if you bet 20
+            pucks on a player, you will win 20 pucks if he scores on the game.
+            Game is real-time so as soon as someone scores, you can see your
+            balance top up!
+          </p>
         </div>
       </ContentLayout>
 

@@ -23,8 +23,8 @@ export const PredictionTable = ({ predictions }) => {
             return <span className='tracking-wider'>{playerTeamName}</span>;
           },
         },
-        { title: 'Points used', field: 'points_used' },
-        { title: 'Points ratio', field: 'points_ratio' },
+        { title: 'Pucks used', field: 'points_used' },
+        { title: 'Puck ratio', field: 'points_ratio' },
       ]}
     />
   );
