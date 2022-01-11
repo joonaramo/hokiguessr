@@ -6,11 +6,12 @@ const axios = require('axios');
 const Goal = require('../models/Goal');
 const Prediction = require('../models/Prediction');
 const User = require('../models/User');
+const Player = require('../models/Player');
 const Cache = require('../utils/cache');
 
 const BASE_URL = 'https://liiga.fi/api/v1';
 const USE_MOCK_DATA = false;
-const mockData = require('./mockData');
+let mockData = require('./mockData');
 
 /**
  * Get all players
@@ -98,17 +99,70 @@ const getGames = async () => {
 };
 
 /**
- * Get a single game from Liiga API
+ * Get a single game from Liiga API. Populate data with players' custom point ratios
  * @param {number} season - Season the game is played on
  * @param {number} gameId - Game ID on Liiga API
  * @returns {object} Single game object
  */
 const getGame = async (season = 2022, gameId) => {
   if (USE_MOCK_DATA) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    mockData.singleGame.awayTeamPlayers = await Promise.all(
+      mockData.singleGame.awayTeamPlayers.map(async (p) => {
+        let points_ratio = 2.0;
+        const player = await Player.findOne({ player_id: p.id });
+        if (player) {
+          points_ratio = player.points_ratio;
+        }
+        return {
+          ...p,
+          points_ratio,
+        };
+      })
+    );
+    mockData.singleGame.homeTeamPlayers = await Promise.all(
+      mockData.singleGame.homeTeamPlayers.map(async (p) => {
+        let points_ratio = 2.0;
+        const player = await Player.findOne({ player_id: p.id });
+        if (player) {
+          points_ratio = player.points_ratio;
+        }
+        return {
+          ...p,
+          points_ratio,
+        };
+      })
+    );
     return mockData.singleGame;
   }
-  const { data } = await axios.get(`${BASE_URL}/games/${season}/${gameId}`);
+  let { data } = await axios.get(`${BASE_URL}/games/${season}/${gameId}`);
+  if (data.awayTeamPlayers && data.homeTeamPlayers) {
+    data.awayTeamPlayers = await Promise.all(
+      data.awayTeamPlayers.map(async (p) => {
+        let points_ratio = 2.0;
+        const player = await Player.findOne({ player_id: p.id });
+        if (player) {
+          points_ratio = player.points_ratio;
+        }
+        return {
+          ...p,
+          points_ratio,
+        };
+      })
+    );
+    data.homeTeamPlayers = await Promise.all(
+      data.homeTeamPlayers.map(async (p) => {
+        let points_ratio = 2.0;
+        const player = await Player.findOne({ player_id: p.id });
+        if (player) {
+          points_ratio = player.points_ratio;
+        }
+        return {
+          ...p,
+          points_ratio,
+        };
+      })
+    );
+  }
   return data;
 };
 
@@ -182,7 +236,7 @@ const poll = async () => {
       });
       // If game state is ended, make all incomplete predictions for that game completed
       if (g.ended) {
-        const [total, predictions] = await Prediction.find({
+        const [, predictions] = await Prediction.find({
           game_id: g.id,
           completed: 0,
         });
