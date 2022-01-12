@@ -11,13 +11,16 @@ const FieldError = require('../utils/errors');
  */
 const getAllFromUser = async (req, res) => {
   const { page = 1, active } = req.query;
-  const limit = 10;
-  const offset = (page - 1) * limit;
+  let limit;
+  let offset;
+  if (!active) {
+    limit = 10;
+    offset = (page - 1) * limit;
+  }
   const [total, predictions] = await Prediction.find(
     { user_id: req.user.id },
     limit,
-    offset,
-    active
+    offset
   );
   let stats;
 
