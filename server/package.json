@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "preinstall": "npm i nodemon -g",
     "start": "node index.js",
     "lint": "eslint .",
     "dev": "nodemon index.js"
