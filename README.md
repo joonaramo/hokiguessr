@@ -31,3 +31,6 @@ Demo app is available at https://hokiguessr.herokuapp.com
 0. Clone the repo
 1. `npm install`
 2. `npm start`
+
+# Screencast
+[![Screencast](https://img.youtube.com/vi/LbvHkCIjIiY/hq1.jpg)](https://www.youtube.com/watch?v=LbvHkCIjIiY)
